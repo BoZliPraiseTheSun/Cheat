@@ -16,15 +16,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/image_product"/>
+            android:id="@+id/image_product_recycler"/>
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14dp"
             android:textColor="@color/colorGray"
-            app:layout_constraintTop_toBottomOf="@id/image_product"
-            app:layout_constraintStart_toStartOf="@id/image_product"
-            app:layout_constraintEnd_toEndOf="@id/image_product"
-            android:id="@+id/cal_product_text"/>
+            app:layout_constraintTop_toBottomOf="@id/image_product_recycler"
+            app:layout_constraintStart_toStartOf="@id/image_product_recycler"
+            app:layout_constraintEnd_toEndOf="@id/image_product_recycler"
+            android:id="@+id/cal_product_text_recycler"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

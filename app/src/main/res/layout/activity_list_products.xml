@@ -8,10 +8,80 @@
         android:padding="16dp"
         tools:context=".ListProductsActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/add_product">
+
+        <ImageView
+                android:layout_width="0dp"
+                android:layout_height="120dp"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/image_product"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Нектарин"
+                android:textColor="@color/colorBlack"
+                android:textSize="32dp"
+                app:layout_constraintTop_toBottomOf="@id/image_product"
+                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/product_name"/>
+
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Грамм"
+                android:textColor="@color/colorBlack"
+                android:inputType="number"
+                android:textSize="14dp"
+                app:layout_constraintTop_toBottomOf="@id/product_name"
+                app:layout_constraintStart_toStartOf="@id/product_name"
+                android:id="@+id/put_cal"/>
+
+        <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/colorBlack"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toEndOf="@id/put_cal"
+                app:layout_constraintTop_toTopOf="@id/put_cal"
+                app:layout_constraintBottom_toBottomOf="@id/put_cal"
+                android:id="@+id/add_product_btn"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ккал: "
+                android:textColor="@color/colorBlack"
+                android:textSize="18dp"
+                app:layout_constraintTop_toBottomOf="@id/put_cal"
+                app:layout_constraintStart_toStartOf="@id/put_cal"
+                android:id="@+id/text_view"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="120"
+                android:textColor="@color/colorBlack"
+                android:textSize="18dp"
+                app:layout_constraintStart_toEndOf="@id/text_view"
+                app:layout_constraintBaseline_toBaselineOf="@id/text_view"
+                android:id="@+id/gram_to_cal_text"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_product"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 

@@ -1,6 +1,7 @@
 package com.example.cheat
 
 import android.content.ContentValues.TAG
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -25,11 +26,15 @@ class ListProductsActivity : AppCompatActivity() {
     companion object {
         var calIn100Gram = -1
     }
+
     lateinit var listProducts: ArrayList<Product>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products_list)
+
+        val mSettings = getSharedPreferences(UserActivity.SETTINGS, Context.MODE_PRIVATE)
+
         listProducts = arrayListOf()
         listProducts.add(Product(R.drawable.ic_bulgur, "Булгур", 342))
         listProducts.add(Product(R.drawable.ic_chicken_fillet, "Куриная грудка", 150))
@@ -45,37 +50,10 @@ class ListProductsActivity : AppCompatActivity() {
         listProducts.add(Product(R.drawable.ic_banana, "Банан", 91))
         listProducts.add(Product(R.drawable.ic_potato, "Картошка", 83))
         listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
-        listProducts.add(Product(R.drawable.ic_oatmeal, "Овсянка", 345))
 
         product_list_recycler.layoutManager = GridLayoutManager(this, 4)
 
-        put_cal.addTextChangedListener(object : TextWatcher{
+        put_cal.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
 
@@ -84,21 +62,30 @@ class ListProductsActivity : AppCompatActivity() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (put_cal.text.isNotEmpty()) {
-                    gram_to_cal_text.text = ((calIn100Gram * put_cal.text.toString().toInt()) / 100f).roundToInt().toString()
+                    gram_to_cal_text.text =
+                        ((calIn100Gram * put_cal.text.toString().toInt()) / 100f).roundToInt().toString()
                 } else {
                     gram_to_cal_text.text = "0"
                 }
             }
-
         })
 
         add_product_btn.setOnClickListener {
             add_product.visibility = View.GONE
+            val calEat = mSettings.getInt(UserActivity.SETTINGS_CAL_EAT, 0)
+            mSettings
+                .edit()
+                .putInt(UserActivity.SETTINGS_CAL_EAT, gram_to_cal_text.text.toString().toInt() + calEat)
+                .apply()
             put_cal.clearFocus()
             put_cal.setText("")
             val handler = Handler()
             Thread(Runnable {
-                try { Thread.sleep(5) } catch (e: InterruptedException) { Log.d(TAG, "Scroll error") }
+                try {
+                    Thread.sleep(1)
+                } catch (e: InterruptedException) {
+                    Log.d(TAG, "Scroll error")
+                }
                 handler.post { scroll_view.fullScroll(View.FOCUS_UP) }
             }).start()
         }
@@ -106,19 +93,20 @@ class ListProductsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        product_list_recycler.adapter = MyAdapter(listProducts, image_product, product_name, add_product, put_cal, gram_to_cal_text, scroll_view)
+        product_list_recycler.adapter =
+            MyAdapter(listProducts, image_product, product_name, add_product, put_cal, gram_to_cal_text, scroll_view)
     }
 }
 
 
 class MyAdapter(
     private val list: ArrayList<Product>,
-    val imageProduct: ImageView,
-    val nameProduct: TextView,
-    val layout: ConstraintLayout,
-    val putCal: EditText,
-    val gramToCal: TextView,
-    val scrollView: ScrollView
+    private val imageProduct: ImageView,
+    private val nameProduct: TextView,
+    private val layout: ConstraintLayout,
+    private val putCal: EditText,
+    private val gramToCal: TextView,
+    private val scrollView: ScrollView
 ) : RecyclerView.Adapter<MyAdapter.MyHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
@@ -152,19 +140,22 @@ class MyAdapter(
 
             itemView.setOnClickListener {
                 Log.d(TAG, "click ${listProduct.name}")
-                Log.d(TAG, "click ${listProduct.image}")
                 ListProductsActivity.calIn100Gram = listProduct.calorieContent
                 imageProduct.setImageResource(listProduct.image)
                 nameProduct.text = listProduct.name
                 if (putCal.text.isNotEmpty()) {
-                    gramToCal.text = ((listProduct.calorieContent * putCal.text.toString().toInt()) / 100f).roundToInt().toString()
+                    gramToCal.text =
+                        ((listProduct.calorieContent * putCal.text.toString().toInt()) / 100f).roundToInt().toString()
                 }
                 if (layout.visibility == View.GONE) {
                     layout.visibility = View.VISIBLE
                 }
                 val handler = Handler()
                 Thread(Runnable {
-                    try { Thread.sleep(5) } catch (e: InterruptedException) { }
+                    try {
+                        Thread.sleep(1)
+                    } catch (e: InterruptedException) {
+                    }
                     handler.post { scrollView.fullScroll(View.FOCUS_UP) }
                 }).start()
             }

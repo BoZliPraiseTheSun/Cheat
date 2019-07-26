@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 
 class UserActivity : AppCompatActivity() {
 
@@ -95,6 +96,7 @@ class UserActivity : AppCompatActivity() {
             val edit = mSettings.edit()
             edit.putInt(SETTINGS_THIS_DAY, getData())
             edit.putInt(SETTINGS_CAL_EAT, 0)
+            edit.putInt(SETTINGS_CAL_BURN, 0)
             edit.putString(SETTINGS_LIST_EAT_PRODUCTS, "")
             edit.apply()
             listEat.clear()
@@ -119,6 +121,7 @@ class UserActivity : AppCompatActivity() {
 
         val builder = DataReadRequest.Builder()
             .aggregate(DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED)
+            .bucketByActivityType(1, TimeUnit.MINUTES)
             .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
             .build()
 
@@ -132,20 +135,20 @@ class UserActivity : AppCompatActivity() {
             }
             .addOnCompleteListener {
                 Log.d(TAG, "accessGoogle Complete")
-                var burnCal = 0f
+                var burnCal = 0
                 if (it.result?.buckets!!.size > 2) {
-                    val buck = it.result!!.buckets[1]
+                    val buck = it.result!!.buckets[2]
                     val ds = buck.getDataSet(DataType.AGGREGATE_CALORIES_EXPENDED)
                     for (dp in ds!!.dataPoints) {
                         val avg = dp.getValue(Field.FIELD_CALORIES).asFloat()
                         Log.d(TAG, "avg: $avg")
-                        burnCal += avg
+                        burnCal += avg.roundToInt()
                     }
                 }
                 Log.d(TAG, "burnCal: $burnCal")
-                mSettings.edit().putFloat(
+                mSettings.edit().putInt(
                     SETTINGS_CAL_BURN,
-                    mSettings.getFloat(SETTINGS_CAL_BURN, 0f) + burnCal
+                    mSettings.getInt(SETTINGS_CAL_BURN, 0) + burnCal
                 ).apply()
             }
     }
@@ -176,6 +179,8 @@ class UserActivity : AppCompatActivity() {
         progress_bar.secondaryProgress = calEat
         progress_bar.progress = calEat
 
+        burn_cal.text = calBurn.toString()
+
         cal_ean_num_text.text = calEat.toString()
         cal_left_num_text.text = ((calPerDay + calBurn) - calEat).toString()
         if (cal_left_num_text.text.toString().toInt() < 0) {
@@ -200,7 +205,9 @@ class UserActivity : AppCompatActivity() {
     ) : RecyclerView.Adapter<MyAdapterProductsEat.MyHolderProductsEat>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolderProductsEat {
-            val itemView = LayoutInflater.from(parent.context).inflate(R.layout.list_product_eat_view, parent, false)
+            val itemView = LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.list_product_eat_view, parent, false)
             return MyHolderProductsEat(itemView)
         }
 

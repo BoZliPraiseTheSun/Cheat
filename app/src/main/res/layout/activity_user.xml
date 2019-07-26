@@ -79,6 +79,13 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@id/go_bay_btn"
+                app:layout_constraintEnd_toStartOf="@id/go_bay_btn"
+                android:id="@+id/burn_cal"/>
+
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -1,5 +1,6 @@
 package com.example.cheat
 
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -19,12 +20,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_products_list.*
+import kotlinx.android.synthetic.main.list_product_view.view.*
 import kotlin.math.roundToInt
 
 class ListProductsActivity : AppCompatActivity() {
 
     companion object {
         var calIn100Gram = -1
+        var idImage = -1
     }
 
     lateinit var listProducts: ArrayList<Product>
@@ -77,6 +80,29 @@ class ListProductsActivity : AppCompatActivity() {
                 .edit()
                 .putInt(UserActivity.SETTINGS_CAL_EAT, gram_to_cal_text.text.toString().toInt() + calEat)
                 .apply()
+
+            val listEat = UserActivity.listEat
+            var createProduct = true
+            if (listEat.isNotEmpty()) {
+                Log.d(TAG, "listEat.add")
+                for (i in listEat) {
+                    if (i.name == product_name.text.toString()) {
+                        i.calorieEat += gram_to_cal_text.text.toString().toInt()
+                        i.gramsEat += put_cal.text.toString().toInt()
+                        createProduct = false
+                    }
+                }
+            }
+            if (createProduct) {
+                Log.d(TAG, "listEat.create")
+                listEat.add(ProductEat(
+                    idImage,
+                    product_name.text.toString(),
+                    gram_to_cal_text.text.toString().toInt(),
+                    put_cal.text.toString().toInt()
+                ))
+            }
+
             put_cal.clearFocus()
             put_cal.setText("")
             val handler = Handler()
@@ -94,72 +120,71 @@ class ListProductsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         product_list_recycler.adapter =
-            MyAdapter(listProducts, image_product, product_name, add_product, put_cal, gram_to_cal_text, scroll_view)
-    }
-}
-
-
-class MyAdapter(
-    private val list: ArrayList<Product>,
-    private val imageProduct: ImageView,
-    private val nameProduct: TextView,
-    private val layout: ConstraintLayout,
-    private val putCal: EditText,
-    private val gramToCal: TextView,
-    private val scrollView: ScrollView
-) : RecyclerView.Adapter<MyAdapter.MyHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.list_product_view, parent, false)
-        return MyHolder(itemView)
+            MyAdapterProducts(listProducts, image_product, product_name, add_product, put_cal, gram_to_cal_text, scroll_view)
     }
 
-    override fun getItemCount(): Int {
-        return list.size
-    }
+    class MyAdapterProducts(
+        private val list: ArrayList<Product>,
+        private val imageProduct: ImageView,
+        private val nameProduct: TextView,
+        private val layout: ConstraintLayout,
+        private val putCal: EditText,
+        private val gramToCal: TextView,
+        private val scrollView: ScrollView
+    ) : RecyclerView.Adapter<MyAdapterProducts.MyHolderProducts>() {
 
-    override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        holder.bindItem(list[position], imageProduct, nameProduct, layout, putCal, gramToCal, scrollView)
-    }
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolderProducts {
+            val itemView = LayoutInflater.from(parent.context).inflate(R.layout.list_product_view, parent, false)
+            return MyHolderProducts(itemView)
+        }
 
-    class MyHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindItem(
-            listProduct: Product,
-            imageProduct: ImageView,
-            nameProduct: TextView,
-            layout: ConstraintLayout,
-            putCal: EditText,
-            gramToCal: TextView,
-            scrollView: ScrollView
-        ) {
-            val imageView = itemView.findViewById<ImageView>(R.id.image_product_recycler)
-            val textView = itemView.findViewById<TextView>(R.id.cal_product_text_recycler)
+        override fun getItemCount(): Int {
+            return list.size
+        }
 
-            imageView.setImageResource(listProduct.image)
-            textView.text = listProduct.calorieContent.toString()
+        override fun onBindViewHolder(holderProducts: MyHolderProducts, position: Int) {
+            holderProducts.bindItem(list[position], imageProduct, nameProduct, layout, putCal, gramToCal, scrollView)
+        }
 
-            itemView.setOnClickListener {
-                Log.d(TAG, "click ${listProduct.name}")
-                ListProductsActivity.calIn100Gram = listProduct.calorieContent
-                imageProduct.setImageResource(listProduct.image)
-                nameProduct.text = listProduct.name
-                if (putCal.text.isNotEmpty()) {
-                    gramToCal.text =
-                        ((listProduct.calorieContent * putCal.text.toString().toInt()) / 100f).roundToInt().toString()
-                }
-                if (layout.visibility == View.GONE) {
-                    layout.visibility = View.VISIBLE
-                }
-                val handler = Handler()
-                Thread(Runnable {
-                    try {
-                        Thread.sleep(1)
-                    } catch (e: InterruptedException) {
+        class MyHolderProducts(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            fun bindItem(
+                listProduct: Product,
+                imageProduct: ImageView,
+                nameProduct: TextView,
+                layout: ConstraintLayout,
+                putCal: EditText,
+                gramToCal: TextView,
+                scrollView: ScrollView
+            ) {
+
+                itemView.image_product_recycler.setImageResource(listProduct.image)
+                itemView.cal_product_text_recycler.text = listProduct.calorieContent.toString()
+
+                itemView.setOnClickListener {
+                    Log.d(TAG, "click ${listProduct.name}")
+                    calIn100Gram = listProduct.calorieContent
+                    idImage = listProduct.image
+                    imageProduct.setImageResource(listProduct.image)
+                    nameProduct.text = listProduct.name
+                    if (putCal.text.isNotEmpty()) {
+                        gramToCal.text =
+                            ((listProduct.calorieContent * putCal.text.toString().toInt()) / 100f).roundToInt()
+                                .toString()
                     }
-                    handler.post { scrollView.fullScroll(View.FOCUS_UP) }
-                }).start()
+                    if (layout.visibility == View.GONE) {
+                        layout.visibility = View.VISIBLE
+                    }
+                    val handler = Handler()
+                    Thread(Runnable {
+                        try {
+                            Thread.sleep(1)
+                        } catch (e: InterruptedException) {
+                        }
+                        handler.post { scrollView.fullScroll(View.FOCUS_UP) }
+                    }).start()
+                }
             }
         }
     }
-}
 
+}

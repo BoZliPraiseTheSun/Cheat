@@ -99,5 +99,21 @@
                     android:id="@+id/product_list_recycler"/>
 
         </RelativeLayout>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="IMAGE"
+                app:layout_constraintTop_toBottomOf="@id/add_product"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/test_open_camera"/>
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="IMAGE"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/test_image"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

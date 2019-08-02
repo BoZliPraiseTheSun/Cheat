@@ -136,13 +136,15 @@ class UserActivity : AppCompatActivity() {
             .addOnCompleteListener {
                 Log.d(TAG, "accessGoogle Complete")
                 var burnCal = 0
-                if (it.result?.buckets!!.size > 2) {
-                    val buck = it.result!!.buckets[2]
-                    val ds = buck.getDataSet(DataType.AGGREGATE_CALORIES_EXPENDED)
-                    for (dp in ds!!.dataPoints) {
-                        val avg = dp.getValue(Field.FIELD_CALORIES).asFloat()
-                        Log.d(TAG, "avg: $avg")
-                        burnCal += avg.roundToInt()
+                if (it.result?.buckets!!.size > 1) {
+                    for (i in 1 until it.result?.buckets!!.size) {
+                        val buck = it.result!!.buckets[i]
+                        val ds = buck.getDataSet(DataType.AGGREGATE_CALORIES_EXPENDED)
+                        for (dp in ds!!.dataPoints) {
+                            val avg = dp.getValue(Field.FIELD_CALORIES).asFloat()
+                            Log.d(TAG, "avg: $avg")
+                            burnCal += avg.roundToInt()
+                        }
                     }
                 }
                 Log.d(TAG, "burnCal: $burnCal")
@@ -221,7 +223,6 @@ class UserActivity : AppCompatActivity() {
 
         class MyHolderProductsEat(itemView: View) : RecyclerView.ViewHolder(itemView) {
             fun bindItem(listProduct: ProductEat) {
-                itemView.image_product_eat.setImageResource(listProduct.image)
                 itemView.name_eat_view.text = listProduct.name
                 itemView.cal_eat_view.text = listProduct.calorieEat.toString()
                 itemView.gram_eat_view.text = listProduct.gramsEat.toString()

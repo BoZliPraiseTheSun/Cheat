@@ -22,8 +22,10 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.soundcloud.android.crop.Crop
 import kotlinx.android.synthetic.main.activity_products_list.*
 import kotlinx.android.synthetic.main.list_product_view.view.*
 import java.io.File
@@ -43,7 +45,7 @@ class ListProductsActivity : AppCompatActivity() {
 
     lateinit var listProducts: ArrayList<Product>
     lateinit var mImageUri: Uri
-    val REQUEST_IMAGE_CAPTURE = 333
+    val REQUEST_CROP_PHOTO = 333
     val REQUEST_TAKE_PHOTO = 334
     val TAG = "ListProductsActivity"
 
@@ -147,16 +149,16 @@ class ListProductsActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when(requestCode) {
-                REQUEST_IMAGE_CAPTURE -> {
+                REQUEST_CROP_PHOTO -> {
                     Log.d(TAG, "REQUEST_IMAGE_CAPTURE")
-                    val imageBitmap = data?.extras?.get("data") as Bitmap
+                    Crop.of(mImageUri, mImageUri).asSquare().withAspect(1,1).start(this)
                 }
                 REQUEST_TAKE_PHOTO  -> {
                     Log.d(TAG, "REQUEST_TAKE_PHOTO")
                     val intent = Intent(this, AddNewProduct::class.java)
-                    intent.putExtra("uri", mImageUri)
+                    intent.data = mImageUri
                     Log.d(TAG, "start Activity AddNewProduct")
-                    startActivity(intent)
+                    startActivityForResult(intent, REQUEST_CROP_PHOTO)
                 }
             }
         }

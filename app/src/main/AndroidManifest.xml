@@ -22,6 +22,7 @@
         </activity>
         <activity android:name=".ListProductsActivity">
         </activity>
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <activity android:name=".UserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

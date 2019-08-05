@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.soundcloud.android.crop.Crop
 import kotlinx.android.synthetic.main.activity_add_new_product.*
 
 class AddNewProduct : AppCompatActivity() {
@@ -13,8 +14,12 @@ class AddNewProduct : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_product)
 
-        image_from_camera.setImageURI(intent.data)
-        setResult(Activity.RESULT_OK)
-        finish()
+        val uri = intent.getParcelableExtra<Uri>("uri")
+        image_from_camera.setImageURI(uri)
+        test_btn.setOnClickListener {
+            Crop.of(uri, uri).asSquare().start(this)
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
     }
 }

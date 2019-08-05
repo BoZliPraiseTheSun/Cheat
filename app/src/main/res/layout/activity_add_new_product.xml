@@ -38,4 +38,12 @@
             app:layout_constraintBottom_toBottomOf="@id/image_from_camera"
             android:id="@+id/save_calorie_content"/>
 
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="fuck"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_from_camera"
+            android:id="@+id/test_btn"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,7 +23,6 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.soundcloud.android.crop.Crop
@@ -52,6 +52,7 @@ class ListProductsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products_list)
+
 
         val mSettings = getSharedPreferences(UserActivity.SETTINGS, Context.MODE_PRIVATE)
 
@@ -128,7 +129,7 @@ class ListProductsActivity : AppCompatActivity() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val imageFile = createImageFile()
         mImageUri = FileProvider.getUriForFile(this,
-            "com.example.cheat.pictures",
+            "com.example.cheat.provider",
             imageFile)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)
         startActivityForResult(intent, REQUEST_TAKE_PHOTO)
@@ -150,13 +151,13 @@ class ListProductsActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when(requestCode) {
                 REQUEST_CROP_PHOTO -> {
-                    Log.d(TAG, "REQUEST_IMAGE_CAPTURE")
-                    Crop.of(mImageUri, mImageUri).asSquare().withAspect(1,1).start(this)
+                    Log.d(TAG, "REQUEST_CROP_PHOTO")
+                    test_image.setImageURI(mImageUri)
                 }
                 REQUEST_TAKE_PHOTO  -> {
                     Log.d(TAG, "REQUEST_TAKE_PHOTO")
                     val intent = Intent(this, AddNewProduct::class.java)
-                    intent.data = mImageUri
+                    intent.putExtra("uri", mImageUri)
                     Log.d(TAG, "start Activity AddNewProduct")
                     startActivityForResult(intent, REQUEST_CROP_PHOTO)
                 }

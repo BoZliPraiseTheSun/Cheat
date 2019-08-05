@@ -21,6 +21,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    aaptOptions {
+        noCompress "tflite"
+        noCompress "lite"
+    }
 }
 
 dependencies {
@@ -34,6 +38,7 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-fitness:17.0.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
+
     implementation 'com.soundcloud.android:android-crop:1.0.1@aar'
 
     implementation 'androidx.recyclerview:recyclerview:1.0.0'

@@ -78,8 +78,6 @@ class UserActivity : AppCompatActivity() {
                 GoogleSignIn.getLastSignedInAccount(this),
                 fitnessOptions
             )
-        } else {
-            accessGoogleFit()
         }
 
         nextDay()
@@ -103,7 +101,7 @@ class UserActivity : AppCompatActivity() {
         }
     }
 
-    fun getListEat(){
+    fun getListEat() {
         val gsonTextt = mSettings.getString(SETTINGS_LIST_EAT_PRODUCTS, "")
         if (gsonTextt != "") {
             val type = object : TypeToken<ArrayList<ProductEat>>() {}.type
@@ -136,10 +134,11 @@ class UserActivity : AppCompatActivity() {
             .addOnCompleteListener {
                 Log.d(TAG, "accessGoogle Complete")
                 var burnCal = 0
-                if (it.result?.buckets!!.size > 1) {
+                if (it.result?.buckets!!.size > 0) {
                     for (i in 1 until it.result?.buckets!!.size) {
                         val buck = it.result!!.buckets[i]
                         val ds = buck.getDataSet(DataType.AGGREGATE_CALORIES_EXPENDED)
+                        Log.d(TAG, "bucket: $i")
                         for (dp in ds!!.dataPoints) {
                             val avg = dp.getValue(Field.FIELD_CALORIES).asFloat()
                             Log.d(TAG, "avg: $avg")
@@ -148,10 +147,7 @@ class UserActivity : AppCompatActivity() {
                     }
                 }
                 Log.d(TAG, "burnCal: $burnCal")
-                mSettings.edit().putInt(
-                    SETTINGS_CAL_BURN,
-                    mSettings.getInt(SETTINGS_CAL_BURN, 0) + burnCal
-                ).apply()
+                mSettings.edit().putInt(SETTINGS_CAL_BURN, burnCal).apply()
             }
     }
 
@@ -164,18 +160,17 @@ class UserActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
-                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE -> {accessGoogleFit()}
+            when (requestCode) {
+                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE -> {
+                }
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    fun reLoad() {
         val calPerDay = mSettings.getInt(SETTINGS_CAL_PER_FAY, 0)
         val calBurn = mSettings.getInt(SETTINGS_CAL_BURN, 0)
         val calEat = mSettings.getInt(SETTINGS_CAL_EAT, 0)
-        Log.d(TAG, "Settings $calEat")
 
         progress_bar.max = (calPerDay + calBurn) * 2
         progress_bar.secondaryProgress = calEat
@@ -192,6 +187,12 @@ class UserActivity : AppCompatActivity() {
         if (listEat.isNotEmpty()) {
             list_eat_recycler.adapter = MyAdapterProductsEat(listEat)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        accessGoogleFit()
+        reLoad()
     }
 
     override fun onPause() {

@@ -21,7 +21,9 @@
     <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Нектарин"
+            android:inputType="textPersonName"
+            android:lines="1"
+            android:hint="Введите назввание"
             app:layout_constraintBottom_toTopOf="@id/save_calorie_content"
             app:layout_constraintStart_toStartOf="@id/save_calorie_content"
             app:layout_constraintEnd_toEndOf="@id/save_calorie_content"
@@ -30,8 +32,10 @@
     <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="400"
+            android:hint="Калорий на 100 грамм"
             android:layout_marginStart="14dp"
+            android:inputType="number"
+            android:lines="1"
             app:layout_constraintHorizontal_weight="12"
             app:layout_constraintStart_toEndOf="@+id/image_from_camera"
             app:layout_constraintEnd_toEndOf="parent"

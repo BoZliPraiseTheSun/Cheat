@@ -18,8 +18,13 @@ class AddNewProduct : AppCompatActivity() {
         image_from_camera.setImageURI(uri)
         test_btn.setOnClickListener {
             Crop.of(uri, uri).asSquare().start(this)
-            setResult(Activity.RESULT_OK)
-            finish()
+            val bundle = Intent()
+            if (save_name_product.text.isNotEmpty() && save_calorie_content.text.isNotEmpty()) {
+                bundle.putExtra("Name", save_name_product.text.toString())
+                bundle.putExtra("Calorie Content", save_calorie_content.text.toString().toInt())
+                setResult(Activity.RESULT_OK, bundle)
+                finish()
+            }
         }
     }
 }

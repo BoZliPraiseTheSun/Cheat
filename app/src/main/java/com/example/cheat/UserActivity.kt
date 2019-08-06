@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -44,6 +45,7 @@ class UserActivity : AppCompatActivity() {
         const val SETTINGS_CAL_EAT = "calEat"
         const val SETTINGS_CAL_BURN = "calBurn"
         const val SETTINGS_LIST_EAT_PRODUCTS = "listEatProduct"
+        const val SETTINGS_LIST_PRODUCTS = "listProduct"
         const val SETTINGS_THIS_DAY = "thisDay"
         const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 77
         val listEat: ArrayList<ProductEat> = arrayListOf()
@@ -224,6 +226,7 @@ class UserActivity : AppCompatActivity() {
 
         class MyHolderProductsEat(itemView: View) : RecyclerView.ViewHolder(itemView) {
             fun bindItem(listProduct: ProductEat) {
+                itemView.image_product_eat.setImageURI(listProduct.imageUri.toUri())
                 itemView.name_eat_view.text = listProduct.name
                 itemView.cal_eat_view.text = listProduct.calorieEat.toString()
                 itemView.gram_eat_view.text = listProduct.gramsEat.toString()

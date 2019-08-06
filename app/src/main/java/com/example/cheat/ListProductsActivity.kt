@@ -3,6 +3,7 @@ package com.example.cheat
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
@@ -23,8 +24,11 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.soundcloud.android.crop.Crop
 import kotlinx.android.synthetic.main.activity_products_list.*
 import kotlinx.android.synthetic.main.list_product_view.view.*
@@ -43,18 +47,19 @@ class ListProductsActivity : AppCompatActivity() {
         var idImage = ""
     }
 
-    lateinit var listProducts: ArrayList<Product>
-    lateinit var mImageUri: Uri
     val REQUEST_CROP_PHOTO = 333
     val REQUEST_TAKE_PHOTO = 334
     val TAG = "ListProductsActivity"
+    lateinit var listProducts: ArrayList<Product>
+    lateinit var mImageUri: Uri
+    lateinit var mSettings: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products_list)
 
 
-        val mSettings = getSharedPreferences(UserActivity.SETTINGS, Context.MODE_PRIVATE)
+        mSettings = getSharedPreferences(UserActivity.SETTINGS, Context.MODE_PRIVATE)
 
         listProducts = arrayListOf()
 
@@ -100,7 +105,7 @@ class ListProductsActivity : AppCompatActivity() {
             if (createProduct) {
                 Log.d(TAG, "listEat.create")
                 listEat.add(ProductEat(
-                    "",
+                    idImage,
                     product_name.text.toString(),
                     gram_to_cal_text.text.toString().toInt(),
                     put_cal.text.toString().toInt()
@@ -109,20 +114,13 @@ class ListProductsActivity : AppCompatActivity() {
 
             put_cal.clearFocus()
             put_cal.setText("")
-            val handler = Handler()
-            Thread(Runnable {
-                try {
-                    Thread.sleep(1)
-                } catch (e: InterruptedException) {
-                    Log.d(TAG, "Scroll error")
-                }
-                handler.post { scroll_view.fullScroll(View.FOCUS_UP) }
-            }).start()
+            slowScroll(scroll_view, TAG)
         }
 
         test_open_camera.setOnClickListener {
             dispatchTakePictureIntent()
         }
+        getListProduct()
     }
 
     private fun dispatchTakePictureIntent() {
@@ -152,7 +150,15 @@ class ListProductsActivity : AppCompatActivity() {
             when(requestCode) {
                 REQUEST_CROP_PHOTO -> {
                     Log.d(TAG, "REQUEST_CROP_PHOTO")
-                    test_image.setImageURI(mImageUri)
+                    if (data != null) {
+                        listProducts.add(Product(
+                            mImageUri.toString(),
+                            data.getStringExtra("Name")!!,
+                            data.getIntExtra("Calorie Content", -1)
+                        ))
+                        product_list_recycler.adapter =
+                            MyAdapterProducts(listProducts, image_product, product_name, add_product, put_cal, gram_to_cal_text, scroll_view)
+                    }
                 }
                 REQUEST_TAKE_PHOTO  -> {
                     Log.d(TAG, "REQUEST_TAKE_PHOTO")
@@ -165,10 +171,25 @@ class ListProductsActivity : AppCompatActivity() {
         }
     }
 
+    fun getListProduct() {
+        val gsonTextt = mSettings.getString(UserActivity.SETTINGS_LIST_PRODUCTS, "")
+        if (gsonTextt != "") {
+            val type = object : TypeToken<ArrayList<Product>>() {}.type
+            listProducts.clear()
+            listProducts.addAll(Gson().fromJson(gsonTextt, type))
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         product_list_recycler.adapter =
             MyAdapterProducts(listProducts, image_product, product_name, add_product, put_cal, gram_to_cal_text, scroll_view)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val gsonText = Gson().toJson(listProducts)
+        mSettings.edit().putString(UserActivity.SETTINGS_LIST_PRODUCTS, gsonText).apply()
     }
 
     class MyAdapterProducts(
@@ -206,31 +227,25 @@ class ListProductsActivity : AppCompatActivity() {
                 scrollView: ScrollView
             ) {
 
-                itemView.image_product_recycler
+                itemView.image_product_recycler.setImageURI(listProduct.imageUri.toUri())
                 itemView.cal_product_text_recycler.text = listProduct.calorieContent.toString()
 
                 itemView.setOnClickListener {
                     Log.d(TAG, "click ${listProduct.name}")
                     calIn100Gram = listProduct.calorieContent
                     idImage = listProduct.imageUri
-                    imageProduct
+                    imageProduct.setImageURI(listProduct.imageUri.toUri())
                     nameProduct.text = listProduct.name
                     if (putCal.text.isNotEmpty()) {
                         gramToCal.text =
-                            ((listProduct.calorieContent * putCal.text.toString().toInt()) / 100f).roundToInt()
+                            ((listProduct.calorieContent * putCal.text.toString().toInt()) / 100f)
+                                .roundToInt()
                                 .toString()
                     }
                     if (layout.visibility == View.GONE) {
                         layout.visibility = View.VISIBLE
                     }
-                    val handler = Handler()
-                    Thread(Runnable {
-                        try {
-                            Thread.sleep(1)
-                        } catch (e: InterruptedException) {
-                        }
-                        handler.post { scrollView.fullScroll(View.FOCUS_UP) }
-                    }).start()
+                    slowScroll(scrollView, TAG)
                 }
             }
         }

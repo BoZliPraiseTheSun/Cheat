@@ -1,7 +1,7 @@
 package com.example.cheat
 
 data class Product(
-    val image: Int,
+    val imageUri: String,
     val name: String,
     val calorieContent: Int
 )

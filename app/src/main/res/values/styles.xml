@@ -8,4 +8,42 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="PrimaryText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
+    <style name="SecondaryText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorGray</item>
+    </style>
+
+    <style name="CalNum" parent="PrimaryText">
+        <item name="android:textSize">24dp</item>
+    </style>
+
+    <style name="CalText" parent="SecondaryText">
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="TextListener" parent="PrimaryText">
+        <item name="android:textSize">18dp</item>
+    </style>
+
+    <style name="AddProduct">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:lines">1</item>
+    </style>
+
+    <style name="ProductEat" parent="SecondaryText">
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="ProductEatView" parent="ProductEat">
+        <item name="android:layout_marginStart">4dp</item>
+    </style>
+    
 </resources>

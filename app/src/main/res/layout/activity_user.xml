@@ -23,22 +23,15 @@
                 android:id="@+id/progress_bar"/>
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1250"
-                android:textColor="@color/colorBlack"
-                android:textSize="24dp"
+                style="@style/CalNum"
                 app:layout_constraintStart_toStartOf="@id/cal_left_text"
                 app:layout_constraintEnd_toEndOf="@id/cal_left_text"
                 app:layout_constraintBottom_toTopOf="@id/cal_left_text"
                 android:id="@+id/cal_left_num_text"/>
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/CalText"
                 android:text="Ккал осталось"
-                android:textColor="@color/colorGray"
-                android:textSize="14dp"
                 app:layout_constraintStart_toStartOf="@id/progress_bar"
                 app:layout_constraintEnd_toEndOf="@id/progress_bar"
                 app:layout_constraintTop_toTopOf="@id/progress_bar"
@@ -46,11 +39,8 @@
                 android:id="@+id/cal_left_text"/>
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/CalText"
                 android:text="Ккал съедено"
-                android:textColor="@color/colorGray"
-                android:textSize="14dp"
                 app:layout_constraintStart_toStartOf="@id/progress_bar"
                 app:layout_constraintEnd_toEndOf="@id/progress_bar"
                 app:layout_constraintTop_toBottomOf="@id/cal_left_text"
@@ -58,11 +48,7 @@
                 android:id="@+id/cal_eat_text"/>
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1250"
-                android:textColor="@color/colorBlack"
-                android:textSize="24dp"
+                style="@style/CalNum"
                 app:layout_constraintStart_toStartOf="@id/cal_eat_text"
                 app:layout_constraintEnd_toEndOf="@id/cal_eat_text"
                 app:layout_constraintTop_toBottomOf="@id/cal_eat_text"

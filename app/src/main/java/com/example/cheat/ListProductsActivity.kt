@@ -4,13 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -29,7 +26,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.soundcloud.android.crop.Crop
 import kotlinx.android.synthetic.main.activity_products_list.*
 import kotlinx.android.synthetic.main.list_product_view.view.*
 import java.io.File
@@ -104,12 +100,14 @@ class ListProductsActivity : AppCompatActivity() {
             }
             if (createProduct) {
                 Log.d(TAG, "listEat.create")
-                listEat.add(ProductEat(
-                    idImage,
-                    product_name.text.toString(),
-                    gram_to_cal_text.text.toString().toInt(),
-                    put_cal.text.toString().toInt()
-                ))
+                listEat.add(
+                    ProductEat(
+                        idImage,
+                        product_name.text.toString(),
+                        gram_to_cal_text.text.toString().toInt(),
+                        put_cal.text.toString().toInt()
+                    )
+                )
             }
 
             put_cal.clearFocus()
@@ -126,9 +124,11 @@ class ListProductsActivity : AppCompatActivity() {
     private fun dispatchTakePictureIntent() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val imageFile = createImageFile()
-        mImageUri = FileProvider.getUriForFile(this,
+        mImageUri = FileProvider.getUriForFile(
+            this,
             "com.example.cheat.provider",
-            imageFile)
+            imageFile
+        )
         intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)
         startActivityForResult(intent, REQUEST_TAKE_PHOTO)
     }
@@ -147,20 +147,30 @@ class ListProductsActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            when(requestCode) {
+            when (requestCode) {
                 REQUEST_CROP_PHOTO -> {
                     Log.d(TAG, "REQUEST_CROP_PHOTO")
                     if (data != null) {
-                        listProducts.add(Product(
-                            mImageUri.toString(),
-                            data.getStringExtra("Name")!!,
-                            data.getIntExtra("Calorie Content", -1)
-                        ))
+                        listProducts.add(
+                            Product(
+                                mImageUri.toString(),
+                                data.getStringExtra("Name")!!,
+                                data.getIntExtra("Calorie Content", -1)
+                            )
+                        )
                         product_list_recycler.adapter =
-                            MyAdapterProducts(listProducts, image_product, product_name, add_product, put_cal, gram_to_cal_text, scroll_view)
+                            MyAdapterProducts(
+                                listProducts,
+                                image_product,
+                                product_name,
+                                add_product,
+                                put_cal,
+                                gram_to_cal_text,
+                                scroll_view
+                            )
                     }
                 }
-                REQUEST_TAKE_PHOTO  -> {
+                REQUEST_TAKE_PHOTO -> {
                     Log.d(TAG, "REQUEST_TAKE_PHOTO")
                     val intent = Intent(this, AddNewProduct::class.java)
                     intent.putExtra("uri", mImageUri)
@@ -183,7 +193,15 @@ class ListProductsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         product_list_recycler.adapter =
-            MyAdapterProducts(listProducts, image_product, product_name, add_product, put_cal, gram_to_cal_text, scroll_view)
+            MyAdapterProducts(
+                listProducts,
+                image_product,
+                product_name,
+                add_product,
+                put_cal,
+                gram_to_cal_text,
+                scroll_view
+            )
     }
 
     override fun onPause() {

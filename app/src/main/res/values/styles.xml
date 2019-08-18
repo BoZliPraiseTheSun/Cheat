@@ -45,5 +45,5 @@
     <style name="ProductEatView" parent="ProductEat">
         <item name="android:layout_marginStart">4dp</item>
     </style>
-    
+
 </resources>

@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.math.round
 import kotlin.math.roundToInt
 
 class UserActivity : AppCompatActivity() {
@@ -44,36 +45,24 @@ class UserActivity : AppCompatActivity() {
         val listEat: ArrayList<ProductEat> = arrayListOf()
     }
 
-    lateinit var mSettings: SharedPreferences
-    lateinit var layoutManager: RecyclerView.LayoutManager
-    val TAG = "UserActivity"
+    private lateinit var mSettings: SharedPreferences
+    private lateinit var layoutManager: RecyclerView.LayoutManager
+    private lateinit var fitnessOptions: FitnessOptions
+
+    private val TAG = "UserActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
-        mSettings = getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
-        layoutManager = LinearLayoutManager(this)
+        initializationLateInitParam()
+        singInGoogleAccount()
 
         if (mSettings.getInt(SETTINGS_CAL_PER_FAY, -1) == -1) {
             mSettings.edit().putInt(SETTINGS_CAL_PER_FAY, 1250).apply()
         }
 
-        list_eat_recycler.layoutManager = LinearLayoutManager(this)
-
-        val fitnessOptions = FitnessOptions.builder()
-            .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.AGGREGATE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
-            .build()
-
-        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this), fitnessOptions)) {
-            GoogleSignIn.requestPermissions(
-                this,
-                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-                GoogleSignIn.getLastSignedInAccount(this),
-                fitnessOptions
-            )
-        }
+        list_eat_recycler.layoutManager = layoutManager
 
         nextDay()
         getListEat()
@@ -84,7 +73,35 @@ class UserActivity : AppCompatActivity() {
         }
     }
 
-    fun nextDay() {
+
+    private fun initializationLateInitParam() {
+        mSettings = getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
+        layoutManager = LinearLayoutManager(this)
+        fitnessOptions = FitnessOptions
+            .builder()
+            .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.TYPE_BASAL_METABOLIC_RATE, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_BASAL_METABOLIC_RATE_SUMMARY, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.TYPE_ACTIVITY_SEGMENT, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_ACTIVITY_SUMMARY, FitnessOptions.ACCESS_READ)
+            .build()
+    }
+
+
+    private fun singInGoogleAccount() {
+        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this), fitnessOptions)) {
+            GoogleSignIn.requestPermissions(
+                this,
+                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+                GoogleSignIn.getLastSignedInAccount(this),
+                fitnessOptions
+            )
+        }
+    }
+
+
+    private fun nextDay() {
         if (mSettings.getInt(SETTINGS_THIS_DAY, -1) != getData()) {
             val edit = mSettings.edit()
             edit.putInt(SETTINGS_THIS_DAY, getData())
@@ -96,25 +113,30 @@ class UserActivity : AppCompatActivity() {
         }
     }
 
-    fun getListEat() {
-        val gsonTextt = mSettings.getString(SETTINGS_LIST_EAT_PRODUCTS, "")
-        if (gsonTextt != "") {
+
+    private fun getListEat() {
+        val gsonText = mSettings.getString(SETTINGS_LIST_EAT_PRODUCTS, "")
+        if (gsonText != "") {
             val type = object : TypeToken<ArrayList<ProductEat>>() {}.type
             listEat.clear()
-            listEat.addAll(Gson().fromJson(gsonTextt, type))
+            listEat.addAll(Gson().fromJson(gsonText, type))
         }
     }
 
-    fun accessGoogleFit() {
+
+    private fun accessGoogleFit() {
         val calendar = Calendar.getInstance()
         calendar.time = Date()
         val endTime = calendar.timeInMillis
-        calendar.add(Calendar.HOUR_OF_DAY, -calendar.get(Calendar.HOUR_OF_DAY))
+        Log.d(TAG, "$calendar")
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        Log.d(TAG, "$calendar")
         val startTime = calendar.timeInMillis
 
         val builder = DataReadRequest.Builder()
             .aggregate(DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED)
-            .bucketByActivityType(1, TimeUnit.MINUTES)
+            .bucketByActivityType(1, TimeUnit.MILLISECONDS)
             .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
             .build()
 
@@ -128,41 +150,44 @@ class UserActivity : AppCompatActivity() {
             }
             .addOnCompleteListener {
                 Log.d(TAG, "accessGoogle Complete")
-                var burnCal = 0
-                if (it.result?.buckets!!.size > 0) {
-                    for (i in 1 until it.result?.buckets!!.size) {
-                        val buck = it.result!!.buckets[i]
-                        val ds = buck.getDataSet(DataType.AGGREGATE_CALORIES_EXPENDED)
-                        Log.d(TAG, "bucket: $i")
-                        for (dp in ds!!.dataPoints) {
-                            val avg = dp.getValue(Field.FIELD_CALORIES).asFloat()
-                            Log.d(TAG, "avg: $avg")
-                            burnCal += avg.roundToInt()
+                var burnCal = 0f
+                val buckets = it.result!!.buckets
+                for (bucket in buckets) {
+                    Log.d(
+                        TAG,
+                        "bucket ${bucket.activity} ${getData()} ${SimpleDateFormat("HH:mm").format(
+                            bucket.getStartTime(TimeUnit.MILLISECONDS)
+                        )} - ${SimpleDateFormat("HH:mm").format(bucket.getEndTime(TimeUnit.MILLISECONDS))}"
+                    )
+                    val activityName = bucket.activity.toString()
+                    val dataSets = bucket.dataSets
+                    if (activityName != "still" && activityName != "unknown") {
+                        for (dataSet in dataSets) {
+                            Log.d(TAG, "dataSet ${dataSet.dataType}")
+                            val dataPoints = dataSet.dataPoints
+                            for (dataPoint in dataPoints) {
+                                Log.d(TAG, "dataPoint ${dataPoint.dataType}")
+                                Log.d(TAG, "Kkal ${dataPoint.getValue(Field.FIELD_CALORIES)}")
+                                val avg = dataPoint.getValue(Field.FIELD_CALORIES).asFloat()
+                                burnCal += round(avg)
+                            }
                         }
                     }
                 }
-                Log.d(TAG, "burnCal: $burnCal")
-                mSettings.edit().putInt(SETTINGS_CAL_BURN, burnCal).apply()
+                Log.d(TAG, "AVG $burnCal")
+                mSettings.edit().putInt(SETTINGS_CAL_BURN, burnCal.roundToInt()).apply()
             }
     }
+
 
     @SuppressLint("SimpleDateFormat")
     fun getData(): Int {
-        val formatData = SimpleDateFormat("DD")
+        val formatData = SimpleDateFormat("dd")
         return formatData.format(Date()).toInt()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            when (requestCode) {
-                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE -> {
-                }
-            }
-        }
-    }
 
-    fun reLoad() {
+    private fun reLoad() {
         val calPerDay = mSettings.getInt(SETTINGS_CAL_PER_FAY, 0)
         val calBurn = mSettings.getInt(SETTINGS_CAL_BURN, 0)
         val calEat = mSettings.getInt(SETTINGS_CAL_EAT, 0)
@@ -184,6 +209,17 @@ class UserActivity : AppCompatActivity() {
         }
     }
 
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE -> {
+                }
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         accessGoogleFit()
@@ -197,6 +233,7 @@ class UserActivity : AppCompatActivity() {
             mSettings.edit().putString(SETTINGS_LIST_EAT_PRODUCTS, gsonText).apply()
         }
     }
+
 
     class MyAdapterProductsEat(
         private val list: ArrayList<ProductEat>

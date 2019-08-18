@@ -39,16 +39,18 @@ import kotlin.math.roundToInt
 class ListProductsActivity : AppCompatActivity() {
 
     companion object {
+        const val REQUEST_TAKE_PHOTO = 334
+        const val REQUEST_CROP_PHOTO = 333
         var calIn100Gram = -1
         var idImage = ""
     }
+    private val TAG = "ListProductsActivity"
 
-    val REQUEST_CROP_PHOTO = 333
-    val REQUEST_TAKE_PHOTO = 334
-    val TAG = "ListProductsActivity"
-    lateinit var listProducts: ArrayList<Product>
-    lateinit var mImageUri: Uri
-    lateinit var mSettings: SharedPreferences
+    private lateinit var listProducts: ArrayList<Product>
+    private lateinit var mSettings: SharedPreferences
+    private lateinit var layoutManager: RecyclerView.LayoutManager
+    private lateinit var mImageUri: Uri
+    private val timeStamp: SimpleDateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,10 +58,10 @@ class ListProductsActivity : AppCompatActivity() {
 
 
         mSettings = getSharedPreferences(UserActivity.SETTINGS, Context.MODE_PRIVATE)
-
+        layoutManager = GridLayoutManager(this, 4)
         listProducts = arrayListOf()
 
-        product_list_recycler.layoutManager = GridLayoutManager(this, 4)
+        product_list_recycler.layoutManager = layoutManager
 
         put_cal.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
@@ -111,7 +113,7 @@ class ListProductsActivity : AppCompatActivity() {
             }
 
             put_cal.clearFocus()
-            put_cal.setText("")
+            put_cal.text.clear()
             slowScroll(scroll_view, TAG)
         }
 
@@ -135,10 +137,9 @@ class ListProductsActivity : AppCompatActivity() {
 
     @Throws(IOException::class)
     private fun createImageFile(): File {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
-            "JPEG_${timeStamp}_",
+            "JPEG_${timeStamp.format(Date())}_",
             ".jpg",
             storageDir
         )
@@ -149,7 +150,6 @@ class ListProductsActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CROP_PHOTO -> {
-                    Log.d(TAG, "REQUEST_CROP_PHOTO")
                     if (data != null) {
                         listProducts.add(
                             Product(
@@ -171,22 +171,20 @@ class ListProductsActivity : AppCompatActivity() {
                     }
                 }
                 REQUEST_TAKE_PHOTO -> {
-                    Log.d(TAG, "REQUEST_TAKE_PHOTO")
                     val intent = Intent(this, AddNewProduct::class.java)
                     intent.putExtra("uri", mImageUri)
-                    Log.d(TAG, "start Activity AddNewProduct")
                     startActivityForResult(intent, REQUEST_CROP_PHOTO)
                 }
             }
         }
     }
 
-    fun getListProduct() {
-        val gsonTextt = mSettings.getString(UserActivity.SETTINGS_LIST_PRODUCTS, "")
-        if (gsonTextt != "") {
+    private fun getListProduct() {
+        val gsonText = mSettings.getString(UserActivity.SETTINGS_LIST_PRODUCTS, "")
+        if (gsonText != "") {
             val type = object : TypeToken<ArrayList<Product>>() {}.type
             listProducts.clear()
-            listProducts.addAll(Gson().fromJson(gsonTextt, type))
+            listProducts.addAll(Gson().fromJson(gsonText, type))
         }
     }
 
@@ -209,6 +207,8 @@ class ListProductsActivity : AppCompatActivity() {
         val gsonText = Gson().toJson(listProducts)
         mSettings.edit().putString(UserActivity.SETTINGS_LIST_PRODUCTS, gsonText).apply()
     }
+
+
 
     class MyAdapterProducts(
         private val list: ArrayList<Product>,
@@ -234,7 +234,7 @@ class ListProductsActivity : AppCompatActivity() {
         }
 
         class MyHolderProducts(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val TAG = "ActivityHolder"
+            private val TAG = "ActivityHolder"
             fun bindItem(
                 listProduct: Product,
                 imageProduct: ImageView,

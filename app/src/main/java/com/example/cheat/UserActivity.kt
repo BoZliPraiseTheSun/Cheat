@@ -8,10 +8,6 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -23,7 +19,6 @@ import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_user.*
-import kotlinx.android.synthetic.main.list_product_eat_view.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -49,6 +44,8 @@ class UserActivity : AppCompatActivity() {
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var fitnessOptions: FitnessOptions
 
+    private val dataFormatHHmm = SimpleDateFormat("HH:mm", Locale.UK)
+    private val dataFormatDD = SimpleDateFormat("dd", Locale.UK)
     private val TAG = "UserActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,9 +152,9 @@ class UserActivity : AppCompatActivity() {
                 for (bucket in buckets) {
                     Log.d(
                         TAG,
-                        "bucket ${bucket.activity} ${getData()} ${SimpleDateFormat("HH:mm").format(
+                        "bucket ${bucket.activity} ${getData()} ${dataFormatHHmm.format(
                             bucket.getStartTime(TimeUnit.MILLISECONDS)
-                        )} - ${SimpleDateFormat("HH:mm").format(bucket.getEndTime(TimeUnit.MILLISECONDS))}"
+                        )} - ${dataFormatHHmm.format(bucket.getEndTime(TimeUnit.MILLISECONDS))}"
                     )
                     val activityName = bucket.activity.toString()
                     val dataSets = bucket.dataSets
@@ -182,8 +179,7 @@ class UserActivity : AppCompatActivity() {
 
     @SuppressLint("SimpleDateFormat")
     fun getData(): Int {
-        val formatData = SimpleDateFormat("dd")
-        return formatData.format(Date()).toInt()
+        return dataFormatDD.format(Date()).toInt()
     }
 
 
@@ -205,7 +201,7 @@ class UserActivity : AppCompatActivity() {
         }
 
         if (listEat.isNotEmpty()) {
-            list_eat_recycler.adapter = MyAdapterProductsEat(listEat)
+            list_eat_recycler.adapter = MyAdapterProductEat(listEat)
         }
     }
 
@@ -233,36 +229,5 @@ class UserActivity : AppCompatActivity() {
             mSettings.edit().putString(SETTINGS_LIST_EAT_PRODUCTS, gsonText).apply()
         }
     }
-
-
-    class MyAdapterProductsEat(
-        private val list: ArrayList<ProductEat>
-    ) : RecyclerView.Adapter<MyAdapterProductsEat.MyHolderProductsEat>() {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolderProductsEat {
-            val itemView = LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.list_product_eat_view, parent, false)
-            return MyHolderProductsEat(itemView)
-        }
-
-        override fun getItemCount(): Int {
-            return list.size
-        }
-
-        override fun onBindViewHolder(holderProductsEat: MyHolderProductsEat, position: Int) {
-            holderProductsEat.bindItem(list[position])
-        }
-
-        class MyHolderProductsEat(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            fun bindItem(listProduct: ProductEat) {
-                itemView.image_product_eat.setImageURI(listProduct.imageUri.toUri())
-                itemView.name_eat_view.text = listProduct.name
-                itemView.cal_eat_view.text = listProduct.calorieEat.toString()
-                itemView.gram_eat_view.text = listProduct.gramsEat.toString()
-                itemView.setOnClickListener {
-                }
-            }
-        }
-    }
 }
+

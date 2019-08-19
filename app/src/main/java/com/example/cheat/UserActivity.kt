@@ -1,6 +1,5 @@
 package com.example.cheat
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -29,13 +28,6 @@ import kotlin.math.roundToInt
 class UserActivity : AppCompatActivity() {
 
     companion object {
-        const val SETTINGS = "mSettings"
-        const val SETTINGS_CAL_PER_FAY = "calPerDay"
-        const val SETTINGS_CAL_EAT = "calEat"
-        const val SETTINGS_CAL_BURN = "calBurn"
-        const val SETTINGS_LIST_EAT_PRODUCTS = "listEatProduct"
-        const val SETTINGS_LIST_PRODUCTS = "listProduct"
-        const val SETTINGS_THIS_DAY = "thisDay"
         const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 77
         val listEat: ArrayList<ProductEat> = arrayListOf()
     }
@@ -55,8 +47,8 @@ class UserActivity : AppCompatActivity() {
         initializationLateInitParam()
         singInGoogleAccount()
 
-        if (mSettings.getInt(SETTINGS_CAL_PER_FAY, -1) == -1) {
-            mSettings.edit().putInt(SETTINGS_CAL_PER_FAY, 1250).apply()
+        if (mSettings.getInt(getString(R.string.cal_per_day_key), -1) == -1) {
+            mSettings.edit().putInt(getString(R.string.cal_per_day_key), 1250).apply()
         }
 
         list_eat_recycler.layoutManager = layoutManager
@@ -72,7 +64,7 @@ class UserActivity : AppCompatActivity() {
 
 
     private fun initializationLateInitParam() {
-        mSettings = getSharedPreferences(SETTINGS, Context.MODE_PRIVATE)
+        mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         layoutManager = LinearLayoutManager(this)
         fitnessOptions = FitnessOptions
             .builder()
@@ -99,12 +91,12 @@ class UserActivity : AppCompatActivity() {
 
 
     private fun nextDay() {
-        if (mSettings.getInt(SETTINGS_THIS_DAY, -1) != getData()) {
+        if (mSettings.getInt(getString(R.string.this_day_key), -1) != getData()) {
             val edit = mSettings.edit()
-            edit.putInt(SETTINGS_THIS_DAY, getData())
-            edit.putInt(SETTINGS_CAL_EAT, 0)
-            edit.putInt(SETTINGS_CAL_BURN, 0)
-            edit.putString(SETTINGS_LIST_EAT_PRODUCTS, "")
+            edit.putInt(getString(R.string.this_day_key), getData())
+            edit.putInt(getString(R.string.cal_eat_key), 0)
+            edit.putInt(getString(R.string.cal_burn_key), 0)
+            edit.putString(getString(R.string.list_product_eat_key), "")
             edit.apply()
             listEat.clear()
         }
@@ -112,7 +104,7 @@ class UserActivity : AppCompatActivity() {
 
 
     private fun getListEat() {
-        val gsonText = mSettings.getString(SETTINGS_LIST_EAT_PRODUCTS, "")
+        val gsonText = mSettings.getString(getString(R.string.list_product_eat_key), "")
         if (gsonText != "") {
             val type = object : TypeToken<ArrayList<ProductEat>>() {}.type
             listEat.clear()
@@ -172,21 +164,19 @@ class UserActivity : AppCompatActivity() {
                     }
                 }
                 Log.d(TAG, "AVG $burnCal")
-                mSettings.edit().putInt(SETTINGS_CAL_BURN, burnCal.roundToInt()).apply()
+                mSettings.edit().putInt(getString(R.string.cal_burn_key), burnCal.roundToInt()).apply()
             }
     }
 
-
-    @SuppressLint("SimpleDateFormat")
-    fun getData(): Int {
+    private fun getData(): Int {
         return dataFormatDD.format(Date()).toInt()
     }
 
 
     private fun reLoad() {
-        val calPerDay = mSettings.getInt(SETTINGS_CAL_PER_FAY, 0)
-        val calBurn = mSettings.getInt(SETTINGS_CAL_BURN, 0)
-        val calEat = mSettings.getInt(SETTINGS_CAL_EAT, 0)
+        val calPerDay = mSettings.getInt(getString(R.string.cal_per_day_key), 0)
+        val calBurn = mSettings.getInt(getString(R.string.cal_burn_key), 0)
+        val calEat = mSettings.getInt(getString(R.string.cal_eat_key), 0)
 
         progress_bar.max = (calPerDay + calBurn) * 2
         progress_bar.secondaryProgress = calEat
@@ -226,7 +216,7 @@ class UserActivity : AppCompatActivity() {
         super.onPause()
         if (listEat.isNotEmpty()) {
             val gsonText = Gson().toJson(listEat)
-            mSettings.edit().putString(SETTINGS_LIST_EAT_PRODUCTS, gsonText).apply()
+            mSettings.edit().putString(getString(R.string.list_product_eat_key), gsonText).apply()
         }
     }
 }

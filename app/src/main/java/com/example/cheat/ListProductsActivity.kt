@@ -21,7 +21,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_list_products.*
 import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -33,11 +32,12 @@ class ListProductsActivity : AppCompatActivity() {
     companion object {
         const val REQUEST_TAKE_PHOTO = 334
         const val REQUEST_CROP_PHOTO = 333
-        var calIn100Gram = -1
-        var idImage = ""
     }
 
     private val TAG = "ListProductsActivity"
+
+    var calIn100Gram = -1
+    var uriImage = ""
 
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
@@ -52,7 +52,7 @@ class ListProductsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_list_products)
 
 
-        mSettings = getSharedPreferences(UserActivity.SETTINGS, Context.MODE_PRIVATE)
+        mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         layoutManager = GridLayoutManager(this, 4)
 
         product_list_recycler.layoutManager = layoutManager
@@ -76,10 +76,10 @@ class ListProductsActivity : AppCompatActivity() {
 
         add_product_btn.setOnClickListener {
             add_product.visibility = View.GONE
-            val calEat = mSettings.getInt(UserActivity.SETTINGS_CAL_EAT, 0)
+            val calEat = mSettings.getInt(getString(R.string.cal_eat_key), 0)
             mSettings
                 .edit()
-                .putInt(UserActivity.SETTINGS_CAL_EAT, gram_to_cal_text.text.toString().toInt() + calEat)
+                .putInt(getString(R.string.cal_eat_key), gram_to_cal_text.text.toString().toInt() + calEat)
                 .apply()
 
             val listEat = UserActivity.listEat
@@ -98,7 +98,7 @@ class ListProductsActivity : AppCompatActivity() {
                 Log.d(TAG, "listEat.create")
                 listEat.add(
                     ProductEat(
-                        idImage,
+                        uriImage,
                         product_name.text.toString(),
                         gram_to_cal_text.text.toString().toInt(),
                         put_cal.text.toString().toInt()
@@ -114,7 +114,7 @@ class ListProductsActivity : AppCompatActivity() {
         test_open_camera.setOnClickListener {
             dispatchTakePictureIntent()
         }
-        
+
         getListProduct()
         createRecyclerView(listProducts)
     }
@@ -131,7 +131,6 @@ class ListProductsActivity : AppCompatActivity() {
         startActivityForResult(intent, REQUEST_TAKE_PHOTO)
     }
 
-    @Throws(IOException::class)
     private fun createImageFile(): File {
         val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
@@ -139,6 +138,38 @@ class ListProductsActivity : AppCompatActivity() {
             ".jpg",
             storageDir
         )
+    }
+
+    private fun getListProduct() {
+        val gsonText = mSettings.getString(getString(R.string.list_product_key), "")
+        if (gsonText != "") {
+            val type = object : TypeToken<ArrayList<Product>>() {}.type
+            listProducts.clear()
+            listProducts.addAll(Gson().fromJson(gsonText, type))
+        }
+    }
+
+    private fun createRecyclerView(list: ArrayList<Product>) {
+        mAdapter = MyAdapterProduct(
+            list
+        ) { product ->
+            calIn100Gram = product.calorieContent
+            uriImage = product.imageUri
+            image_product.setImageURI(product.imageUri.toUri())
+            product_name.text = product.name
+            if (put_cal.text.isNotEmpty()) {
+                gram_to_cal_text.text =
+                    ((product.calorieContent * put_cal.text.toString().toInt()) / 100f)
+                        .roundToInt()
+                        .toString()
+            }
+            if (add_product.visibility == View.GONE) {
+                add_product.visibility = View.VISIBLE
+            }
+            slowScroll(scroll_view, TAG)
+        }
+        product_list_recycler.adapter = mAdapter
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -166,42 +197,10 @@ class ListProductsActivity : AppCompatActivity() {
         }
     }
 
-    private fun getListProduct() {
-        val gsonText = mSettings.getString(UserActivity.SETTINGS_LIST_PRODUCTS, "")
-        if (gsonText != "") {
-            val type = object : TypeToken<ArrayList<Product>>() {}.type
-            listProducts.clear()
-            listProducts.addAll(Gson().fromJson(gsonText, type))
-        }
-    }
-
-    private fun createRecyclerView(list: ArrayList<Product>) {
-        mAdapter = MyAdapterProduct(
-            list
-        ) { product ->
-            calIn100Gram = product.calorieContent
-            idImage = product.imageUri
-            image_product.setImageURI(product.imageUri.toUri())
-            product_name.text = product.name
-            if (put_cal.text.isNotEmpty()) {
-                gram_to_cal_text.text =
-                    ((product.calorieContent * put_cal.text.toString().toInt()) / 100f)
-                        .roundToInt()
-                        .toString()
-            }
-            if (add_product.visibility == View.GONE) {
-                add_product.visibility = View.VISIBLE
-            }
-            slowScroll(scroll_view, TAG)
-        }
-        product_list_recycler.adapter = mAdapter
-
-    }
-
     override fun onPause() {
         super.onPause()
         val gsonText = Gson().toJson(listProducts)
-        mSettings.edit().putString(UserActivity.SETTINGS_LIST_PRODUCTS, gsonText).apply()
+        mSettings.edit().putString(getString(R.string.list_product_key), gsonText).apply()
     }
 
 }

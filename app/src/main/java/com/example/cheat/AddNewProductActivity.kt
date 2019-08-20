@@ -8,7 +8,7 @@ import android.os.Bundle
 import com.soundcloud.android.crop.Crop
 import kotlinx.android.synthetic.main.activity_add_new_product.*
 
-class AddNewProduct : AppCompatActivity() {
+class AddNewProductActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

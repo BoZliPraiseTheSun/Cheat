@@ -18,9 +18,9 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".AddNewProduct">
+        <activity android:name=".AddNewProductActivity">
         </activity>
-        <activity android:name=".ListProductsActivity">
+        <activity android:name=".ProductsStoreActivity">
         </activity>
         <activity android:name=".UserActivity">
             <intent-filter>

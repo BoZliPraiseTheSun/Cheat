@@ -35,6 +35,7 @@ class UserActivity : AppCompatActivity() {
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var fitnessOptions: FitnessOptions
+    private lateinit var adapter: MyAdapterFoodsEaten
 
     private val dataFormatHHmm = SimpleDateFormat("HH:mm", Locale.UK)
     private val dataFormatDD = SimpleDateFormat("dd", Locale.UK)
@@ -43,6 +44,7 @@ class UserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
+
 
         initializationLateInitParam()
         singInGoogleAccount()
@@ -55,9 +57,10 @@ class UserActivity : AppCompatActivity() {
 
         nextDay()
         getListEat()
+        list_eat_recycler.adapter = adapter
 
         go_bay_btn.setOnClickListener {
-            val intent = Intent(this, ListProductsActivity::class.java)
+            val intent = Intent(this, ProductsStoreActivity::class.java)
             startActivity(intent)
         }
     }
@@ -66,6 +69,7 @@ class UserActivity : AppCompatActivity() {
     private fun initializationLateInitParam() {
         mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         layoutManager = LinearLayoutManager(this)
+        adapter = MyAdapterFoodsEaten(listFoodsEaten)
         fitnessOptions = FitnessOptions
             .builder()
             .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
@@ -107,7 +111,6 @@ class UserActivity : AppCompatActivity() {
         val gsonText = mSettings.getString(getString(R.string.list_product_eat_key), "")
         if (gsonText != "") {
             val type = object : TypeToken<ArrayList<FoodsEaten>>() {}.type
-            listFoodsEaten.clear()
             listFoodsEaten.addAll(Gson().fromJson(gsonText, type))
         }
     }
@@ -150,7 +153,7 @@ class UserActivity : AppCompatActivity() {
                     )
                     val activityName = bucket.activity.toString()
                     val dataSets = bucket.dataSets
-                    if (activityName != "still" && activityName != "unknown") {
+                    if (activityName != "still" && activityName != "unknown" && activityName != "in_vehicle") {
                         for (dataSet in dataSets) {
                             Log.d(TAG, "dataSet ${dataSet.dataType}")
                             val dataPoints = dataSet.dataPoints
@@ -191,7 +194,7 @@ class UserActivity : AppCompatActivity() {
         }
 
         if (listFoodsEaten.isNotEmpty()) {
-            list_eat_recycler.adapter = MyAdapterFoodsEaten(listFoodsEaten)
+            adapter.notifyDataSetChanged()
         }
     }
 

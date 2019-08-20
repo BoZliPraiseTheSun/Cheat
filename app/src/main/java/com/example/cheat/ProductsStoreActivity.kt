@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.activity_list_products.*
+import kotlinx.android.synthetic.main.activity_products_store.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,14 +27,14 @@ import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 @Suppress("DEPRECATION")
-class ListProductsActivity : AppCompatActivity() {
+class ProductsStoreActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_TAKE_PHOTO = 334
         const val REQUEST_CROP_PHOTO = 333
     }
 
-    private val TAG = "ListProductsActivity"
+    private val TAG = "ProductsStoreActivity"
 
     var calIn100Gram = -1
     var uriImage = ""
@@ -49,7 +49,7 @@ class ListProductsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list_products)
+        setContentView(R.layout.activity_products_store)
 
 
         mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
@@ -189,7 +189,7 @@ class ListProductsActivity : AppCompatActivity() {
                     }
                 }
                 REQUEST_TAKE_PHOTO -> {
-                    val intent = Intent(this, AddNewProduct::class.java)
+                    val intent = Intent(this, AddNewProductActivity::class.java)
                     intent.putExtra("uri", mImageUri)
                     startActivityForResult(intent, REQUEST_CROP_PHOTO)
                 }

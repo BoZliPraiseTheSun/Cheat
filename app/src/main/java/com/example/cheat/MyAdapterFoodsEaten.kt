@@ -7,8 +7,8 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.view_holder_product_eat.view.*
 
-class MyAdapterProductEat(private val list: ArrayList<ProductEat>) :
-    RecyclerView.Adapter<MyAdapterProductEat.MyHolderProductEat>() {
+class MyAdapterFoodsEaten(private val list: ArrayList<FoodsEaten>) :
+    RecyclerView.Adapter<MyAdapterFoodsEaten.MyHolderProductEat>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolderProductEat {
         val itemView = LayoutInflater

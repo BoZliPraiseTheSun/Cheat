@@ -82,10 +82,10 @@ class ListProductsActivity : AppCompatActivity() {
                 .putInt(getString(R.string.cal_eat_key), gram_to_cal_text.text.toString().toInt() + calEat)
                 .apply()
 
-            val listEat = UserActivity.listEat
+            val listEat = UserActivity.listFoodsEaten
             var createProduct = true
             if (listEat.isNotEmpty()) {
-                Log.d(TAG, "listEat.add")
+                Log.d(TAG, "listFoodsEaten.add")
                 for (i in listEat) {
                     if (i.name == product_name.text.toString()) {
                         i.calorieEat += gram_to_cal_text.text.toString().toInt()
@@ -95,9 +95,9 @@ class ListProductsActivity : AppCompatActivity() {
                 }
             }
             if (createProduct) {
-                Log.d(TAG, "listEat.create")
+                Log.d(TAG, "listFoodsEaten.create")
                 listEat.add(
-                    ProductEat(
+                    FoodsEaten(
                         uriImage,
                         product_name.text.toString(),
                         gram_to_cal_text.text.toString().toInt(),

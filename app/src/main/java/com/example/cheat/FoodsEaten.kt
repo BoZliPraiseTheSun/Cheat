@@ -1,6 +1,6 @@
 package com.example.cheat
 
-data class ProductEat(
+data class FoodsEaten(
     val imageUri: String,
     val name: String,
     var calorieEat: Int,

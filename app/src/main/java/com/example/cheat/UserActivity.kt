@@ -29,7 +29,7 @@ class UserActivity : AppCompatActivity() {
 
     companion object {
         const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 77
-        val listEat: ArrayList<ProductEat> = arrayListOf()
+        val listFoodsEaten: ArrayList<FoodsEaten> = arrayListOf()
     }
 
     private lateinit var mSettings: SharedPreferences
@@ -98,7 +98,7 @@ class UserActivity : AppCompatActivity() {
             edit.putInt(getString(R.string.cal_burn_key), 0)
             edit.putString(getString(R.string.list_product_eat_key), "")
             edit.apply()
-            listEat.clear()
+            listFoodsEaten.clear()
         }
     }
 
@@ -106,9 +106,9 @@ class UserActivity : AppCompatActivity() {
     private fun getListEat() {
         val gsonText = mSettings.getString(getString(R.string.list_product_eat_key), "")
         if (gsonText != "") {
-            val type = object : TypeToken<ArrayList<ProductEat>>() {}.type
-            listEat.clear()
-            listEat.addAll(Gson().fromJson(gsonText, type))
+            val type = object : TypeToken<ArrayList<FoodsEaten>>() {}.type
+            listFoodsEaten.clear()
+            listFoodsEaten.addAll(Gson().fromJson(gsonText, type))
         }
     }
 
@@ -190,8 +190,8 @@ class UserActivity : AppCompatActivity() {
             cal_left_num_text.text = "0"
         }
 
-        if (listEat.isNotEmpty()) {
-            list_eat_recycler.adapter = MyAdapterProductEat(listEat)
+        if (listFoodsEaten.isNotEmpty()) {
+            list_eat_recycler.adapter = MyAdapterFoodsEaten(listFoodsEaten)
         }
     }
 
@@ -214,8 +214,8 @@ class UserActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (listEat.isNotEmpty()) {
-            val gsonText = Gson().toJson(listEat)
+        if (listFoodsEaten.isNotEmpty()) {
+            val gsonText = Gson().toJson(listFoodsEaten)
             mSettings.edit().putString(getString(R.string.list_product_eat_key), gsonText).apply()
         }
     }

@@ -22,7 +22,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import kotlin.math.round
 import kotlin.math.roundToInt
 
 class UserActivity : AppCompatActivity() {
@@ -35,7 +34,7 @@ class UserActivity : AppCompatActivity() {
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var fitnessOptions: FitnessOptions
-    private lateinit var adapter: MyAdapterFoodsEaten
+    private lateinit var mAdapter: MyAdapterFoodsEaten
 
     private val dataFormatHHmm = SimpleDateFormat("HH:mm", Locale.UK)
     private val dataFormatDD = SimpleDateFormat("dd", Locale.UK)
@@ -57,7 +56,7 @@ class UserActivity : AppCompatActivity() {
 
         nextDay()
         getListEat()
-        list_eat_recycler.adapter = adapter
+        list_eat_recycler.adapter = mAdapter
 
         go_bay_btn.setOnClickListener {
             val intent = Intent(this, ProductsStoreActivity::class.java)
@@ -69,7 +68,7 @@ class UserActivity : AppCompatActivity() {
     private fun initializationLateInitParam() {
         mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         layoutManager = LinearLayoutManager(this)
-        adapter = MyAdapterFoodsEaten(listFoodsEaten)
+        mAdapter = MyAdapterFoodsEaten(listFoodsEaten)
         fitnessOptions = FitnessOptions
             .builder()
             .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
@@ -96,8 +95,11 @@ class UserActivity : AppCompatActivity() {
 
     private fun nextDay() {
         if (mSettings.getInt(getString(R.string.this_day_key), -1) != getData()) {
+            val calBurnAll = mSettings.getInt(getString(R.string.cal_burn_all_key), 0)
+            val calBurn = mSettings.getInt(getString(R.string.cal_burn_key), 0)
             val edit = mSettings.edit()
             edit.putInt(getString(R.string.this_day_key), getData())
+            edit.putInt(getString(R.string.cal_burn_all_key), calBurnAll + calBurn)
             edit.putInt(getString(R.string.cal_eat_key), 0)
             edit.putInt(getString(R.string.cal_burn_key), 0)
             edit.putString(getString(R.string.list_product_eat_key), "")
@@ -153,15 +155,17 @@ class UserActivity : AppCompatActivity() {
                     )
                     val activityName = bucket.activity.toString()
                     val dataSets = bucket.dataSets
-                    if (activityName != "still" && activityName != "unknown" && activityName != "in_vehicle") {
+                    if (activityName != "still" &&
+                        activityName != "unknown" &&
+                        activityName != "in_vehicle") {
                         for (dataSet in dataSets) {
                             Log.d(TAG, "dataSet ${dataSet.dataType}")
                             val dataPoints = dataSet.dataPoints
                             for (dataPoint in dataPoints) {
                                 Log.d(TAG, "dataPoint ${dataPoint.dataType}")
-                                Log.d(TAG, "Kkal ${dataPoint.getValue(Field.FIELD_CALORIES)}")
                                 val avg = dataPoint.getValue(Field.FIELD_CALORIES).asFloat()
-                                burnCal += round(avg)
+                                Log.d(TAG, "Kkal $avg")
+                                burnCal += avg
                             }
                         }
                     }
@@ -179,6 +183,7 @@ class UserActivity : AppCompatActivity() {
     private fun reLoad() {
         val calPerDay = mSettings.getInt(getString(R.string.cal_per_day_key), 0)
         val calBurn = mSettings.getInt(getString(R.string.cal_burn_key), 0)
+        val calBurnAll = mSettings.getInt(getString(R.string.cal_burn_all_key), 0)
         val calEat = mSettings.getInt(getString(R.string.cal_eat_key), 0)
 
         progress_bar.max = (calPerDay + calBurn) * 2
@@ -186,6 +191,7 @@ class UserActivity : AppCompatActivity() {
         progress_bar.progress = calEat
 
         burn_cal.text = calBurn.toString()
+        coin.text = (calBurnAll + calBurn).toString()
 
         cal_ean_num_text.text = calEat.toString()
         cal_left_num_text.text = ((calPerDay + calBurn) - calEat).toString()
@@ -194,8 +200,12 @@ class UserActivity : AppCompatActivity() {
         }
 
         if (listFoodsEaten.isNotEmpty()) {
-            adapter.notifyDataSetChanged()
+            mAdapter.notifyDataSetChanged()
         }
+    }
+
+    private fun calInCoin(cal: Int): Int {
+        return (cal * 0.25f).roundToInt()
     }
 
 

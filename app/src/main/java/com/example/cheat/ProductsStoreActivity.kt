@@ -13,6 +13,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.SeekBar
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.GridLayoutManager
@@ -52,25 +53,22 @@ class ProductsStoreActivity : AppCompatActivity() {
         setContentView(R.layout.activity_products_store)
 
 
-        mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        mSettings =
+            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         layoutManager = GridLayoutManager(this, 4)
 
         product_list_recycler.layoutManager = layoutManager
 
-        put_cal.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+        put_cal.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                view_cal_in_seek_bar.text = p1.toString()
+                gram_to_cal_text.text = viewCal(calIn100Gram, p1)
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun onStartTrackingTouch(p0: SeekBar?) {
             }
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (put_cal.text.isNotEmpty()) {
-                    gram_to_cal_text.text =
-                        ((calIn100Gram * put_cal.text.toString().toInt()) / 100f).roundToInt().toString()
-                } else {
-                    gram_to_cal_text.text = "0"
-                }
+            override fun onStopTrackingTouch(p0: SeekBar?) {
             }
         })
 
@@ -79,7 +77,10 @@ class ProductsStoreActivity : AppCompatActivity() {
             val calEat = mSettings.getInt(getString(R.string.cal_eat_key), 0)
             mSettings
                 .edit()
-                .putInt(getString(R.string.cal_eat_key), gram_to_cal_text.text.toString().toInt() + calEat)
+                .putInt(
+                    getString(R.string.cal_eat_key),
+                    gram_to_cal_text.text.toString().toInt() + calEat
+                )
                 .apply()
 
             val listEat = UserActivity.listFoodsEaten
@@ -89,7 +90,7 @@ class ProductsStoreActivity : AppCompatActivity() {
                 for (i in listEat) {
                     if (i.name == product_name.text.toString()) {
                         i.calorieEat += gram_to_cal_text.text.toString().toInt()
-                        i.gramsEat += put_cal.text.toString().toInt()
+                        i.gramsEat += put_cal.progress.toString().toInt()
                         createProduct = false
                     }
                 }
@@ -101,13 +102,12 @@ class ProductsStoreActivity : AppCompatActivity() {
                         uriImage,
                         product_name.text.toString(),
                         gram_to_cal_text.text.toString().toInt(),
-                        put_cal.text.toString().toInt()
+                        put_cal.progress.toString().toInt()
                     )
                 )
             }
 
-            put_cal.clearFocus()
-            put_cal.text.clear()
+            put_cal.progress = 0
             slowScroll(scroll_view, TAG)
         }
 
@@ -149,6 +149,12 @@ class ProductsStoreActivity : AppCompatActivity() {
         }
     }
 
+    private fun viewCal(calorieContent: Int, gram: Int): String {
+        return ((calorieContent * put_cal.progress.toString().toInt()) / 100f)
+            .roundToInt()
+            .toString()
+    }
+
     private fun createRecyclerView(list: ArrayList<Product>) {
         mAdapter = MyAdapterProduct(
             list
@@ -157,12 +163,7 @@ class ProductsStoreActivity : AppCompatActivity() {
             uriImage = product.imageUri
             image_product.setImageURI(product.imageUri.toUri())
             product_name.text = product.name
-            if (put_cal.text.isNotEmpty()) {
-                gram_to_cal_text.text =
-                    ((product.calorieContent * put_cal.text.toString().toInt()) / 100f)
-                        .roundToInt()
-                        .toString()
-            }
+            gram_to_cal_text.text = viewCal(product.calorieContent, put_cal.progress)
             if (add_product.visibility == View.GONE) {
                 add_product.visibility = View.VISIBLE
             }

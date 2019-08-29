@@ -37,33 +37,43 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:id="@+id/product_name"/>
 
-            <EditText
-                    style="@style/CalNum"
-                    android:inputType="number"
-                    android:hint="Грамм"
-                    android:maxLength="5"
-                    android:imeOptions="actionDone"
-                    app:layout_constraintTop_toBottomOf="@id/product_name"
-                    app:layout_constraintStart_toStartOf="@id/product_name"
+            <SeekBar
+                    android:layout_width="0dp"
+                    app:layout_constraintHorizontal_weight="9"
+                    android:layout_height="20dp"
+                    android:max="150"
+                    android:progress="0"
+                    app:layout_constraintTop_toTopOf="@id/view_cal_in_seek_bar"
+                    app:layout_constraintStart_toEndOf="@id/view_cal_in_seek_bar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/view_cal_in_seek_bar"
                     android:id="@+id/put_cal"/>
+
+            <TextView
+                    style="@style/TextListener"
+                    app:layout_constraintHorizontal_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="20dp"
+                    app:layout_constraintTop_toBottomOf="@id/product_name"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/put_cal"
+                    android:id="@+id/view_cal_in_seek_bar"/>
 
             <ImageButton
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:src="@drawable/ic_eat"
                     android:background="@drawable/custom_add_btn"
                     app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintStart_toEndOf="@id/put_cal"
-                    app:layout_constraintTop_toTopOf="@id/put_cal"
-                    app:layout_constraintBottom_toBottomOf="@id/put_cal"
+                    app:layout_constraintTop_toBottomOf="@id/put_cal"
+                    app:layout_constraintEnd_toEndOf="@id/put_cal"
                     android:id="@+id/add_product_btn"/>
 
             <TextView
                     style="@style/TextListener"
                     android:text="Ккал: "
                     app:layout_constraintTop_toBottomOf="@id/put_cal"
-                    app:layout_constraintStart_toStartOf="@id/put_cal"
+                    app:layout_constraintStart_toStartOf="@id/view_cal_in_seek_bar"
                     android:id="@+id/text_view"/>
 
             <TextView

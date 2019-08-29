@@ -68,9 +68,18 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/go_bay_btn"
+                app:layout_constraintTop_toTopOf="@id/go_bay_btn"
+                app:layout_constraintBottom_toTopOf="@id/coin"
                 app:layout_constraintEnd_toStartOf="@id/go_bay_btn"
                 android:id="@+id/burn_cal"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/burn_cal"
+                app:layout_constraintTop_toBottomOf="@id/burn_cal"
+                app:layout_constraintBottom_toBottomOf="@id/go_bay_btn"
+                android:id="@+id/coin"/>
 
         <Button
                 android:layout_width="wrap_content"

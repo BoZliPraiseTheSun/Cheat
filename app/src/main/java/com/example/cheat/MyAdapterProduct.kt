@@ -26,7 +26,8 @@ class MyAdapterProduct(
     override fun onBindViewHolder(holderProducts: MyHolderProduct, position: Int) {
         val listProduct = list[position]
         holderProducts.apply {
-            itemView.image_product_recycler.setImageURI(listProduct.imageUri.toUri())
+            itemView.name_product_recycler.text = listProduct.name
+//            itemView.name_product_recycler.setImageURI(listProduct.imageUri.toUri())
             itemView.cal_product_text_recycler.text = listProduct.calorieContent.toString()
 
             itemView.setOnClickListener {

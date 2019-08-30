@@ -17,6 +17,7 @@ import android.widget.SeekBar
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -38,7 +39,7 @@ class ProductsStoreActivity : AppCompatActivity() {
     private val TAG = "ProductsStoreActivity"
 
     var calIn100Gram = -1
-    var uriImage = ""
+    var uriImage: String? = ""
 
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
@@ -55,7 +56,7 @@ class ProductsStoreActivity : AppCompatActivity() {
 
         mSettings =
             getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        layoutManager = GridLayoutManager(this, 4)
+        layoutManager = LinearLayoutManager(this)
 
         product_list_recycler.layoutManager = layoutManager
 
@@ -161,7 +162,7 @@ class ProductsStoreActivity : AppCompatActivity() {
         ) { product ->
             calIn100Gram = product.calorieContent
             uriImage = product.imageUri
-            image_product.setImageURI(product.imageUri.toUri())
+            image_product.setImageURI(product.imageUri?.toUri())
             product_name.text = product.name
             gram_to_cal_text.text = viewCal(product.calorieContent, put_cal.progress)
             if (add_product.visibility == View.GONE) {

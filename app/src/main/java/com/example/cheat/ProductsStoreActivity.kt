@@ -68,6 +68,13 @@ class ProductsStoreActivity : AppCompatActivity() {
             }
         })
 
+        deleted_product.setOnClickListener {
+            listProducts.remove(Product(product_name.text.toString(), calIn100Gram))
+            add_product.visibility = View.GONE
+            mAdapter.notifyDataSetChanged()
+
+        }
+
         add_product_btn.setOnClickListener {
             add_product.visibility = View.GONE
             val calEat = mSettings.getInt(getString(R.string.cal_eat_key), 0)

@@ -50,6 +50,16 @@
                     app:layout_constraintEnd_toStartOf="@id/put_cal"
                     android:id="@+id/view_cal_in_seek_bar"/>
 
+            <Button
+                    android:layout_width="50dp"
+                    android:layout_height="40dp"
+                    android:text="Del"
+                    android:layout_marginEnd="12dp"
+                    app:layout_constraintTop_toTopOf="@id/add_product_btn"
+                    app:layout_constraintBottom_toBottomOf="@id/add_product_btn"
+                    app:layout_constraintEnd_toStartOf="@id/add_product_btn"
+                    android:id="@+id/deleted_product"/>
+
             <ImageButton
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

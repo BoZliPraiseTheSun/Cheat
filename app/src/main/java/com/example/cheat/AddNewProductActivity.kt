@@ -14,10 +14,7 @@ class AddNewProductActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_new_product)
 
-        val uri = intent.getParcelableExtra<Uri>("uri")
-        image_from_camera.setImageURI(uri)
         test_btn.setOnClickListener {
-            Crop.of(uri, uri).asSquare().start(this)
             val bundle = Intent()
             if (save_name_product.text.isNotEmpty() && save_calorie_content.text.isNotEmpty()) {
                 bundle.putExtra("Name", save_name_product.text.toString())

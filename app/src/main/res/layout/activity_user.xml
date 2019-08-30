@@ -23,14 +23,14 @@
                 android:id="@+id/progress_bar"/>
 
         <TextView
-                style="@style/CalNum"
+                style="@style/TextBig"
                 app:layout_constraintStart_toStartOf="@id/cal_left_text"
                 app:layout_constraintEnd_toEndOf="@id/cal_left_text"
                 app:layout_constraintBottom_toTopOf="@id/cal_left_text"
                 android:id="@+id/cal_left_num_text"/>
 
         <TextView
-                style="@style/CalText"
+                style="@style/TextSmall"
                 android:text="Ккал осталось"
                 app:layout_constraintStart_toStartOf="@id/progress_bar"
                 app:layout_constraintEnd_toEndOf="@id/progress_bar"
@@ -39,7 +39,7 @@
                 android:id="@+id/cal_left_text"/>
 
         <TextView
-                style="@style/CalText"
+                style="@style/TextSmall"
                 android:text="Ккал съедено"
                 app:layout_constraintStart_toStartOf="@id/progress_bar"
                 app:layout_constraintEnd_toEndOf="@id/progress_bar"
@@ -48,7 +48,7 @@
                 android:id="@+id/cal_eat_text"/>
 
         <TextView
-                style="@style/CalNum"
+                style="@style/TextBig"
                 app:layout_constraintStart_toStartOf="@id/cal_eat_text"
                 app:layout_constraintEnd_toEndOf="@id/cal_eat_text"
                 app:layout_constraintTop_toBottomOf="@id/cal_eat_text"

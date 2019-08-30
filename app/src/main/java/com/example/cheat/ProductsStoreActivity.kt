@@ -9,14 +9,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -33,13 +29,12 @@ class ProductsStoreActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_TAKE_PHOTO = 334
-        const val REQUEST_CROP_PHOTO = 333
+        const val REQUEST_CREATE_PRODUCT = 333
     }
 
     private val TAG = "ProductsStoreActivity"
 
     var calIn100Gram = -1
-    var uriImage: String? = ""
 
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
@@ -100,7 +95,6 @@ class ProductsStoreActivity : AppCompatActivity() {
                 Log.d(TAG, "listFoodsEaten.create")
                 listEat.add(
                     FoodsEaten(
-                        uriImage,
                         product_name.text.toString(),
                         gram_to_cal_text.text.toString().toInt(),
                         put_cal.progress.toString().toInt()
@@ -112,8 +106,9 @@ class ProductsStoreActivity : AppCompatActivity() {
             slowScroll(scroll_view, TAG)
         }
 
-        test_open_camera.setOnClickListener {
-            dispatchTakePictureIntent()
+        test_add_product.setOnClickListener {
+            val intent = Intent(this, AddNewProductActivity::class.java)
+            startActivity(intent)
         }
 
         getListProduct()
@@ -161,8 +156,6 @@ class ProductsStoreActivity : AppCompatActivity() {
             list
         ) { product ->
             calIn100Gram = product.calorieContent
-            uriImage = product.imageUri
-            image_product.setImageURI(product.imageUri?.toUri())
             product_name.text = product.name
             gram_to_cal_text.text = viewCal(product.calorieContent, put_cal.progress)
             if (add_product.visibility == View.GONE) {
@@ -178,22 +171,16 @@ class ProductsStoreActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-                REQUEST_CROP_PHOTO -> {
+                REQUEST_CREATE_PRODUCT -> {
                     if (data != null) {
                         listProducts.add(
                             Product(
-                                mImageUri.toString(),
                                 data.getStringExtra("Name")!!,
                                 data.getIntExtra("Calorie Content", -1)
                             )
                         )
                         mAdapter.notifyDataSetChanged()
                     }
-                }
-                REQUEST_TAKE_PHOTO -> {
-                    val intent = Intent(this, AddNewProductActivity::class.java)
-                    intent.putExtra("uri", mImageUri)
-                    startActivityForResult(intent, REQUEST_CROP_PHOTO)
                 }
             }
         }

@@ -8,34 +8,23 @@
         android:padding="16dp"
         tools:context=".AddNewProductActivity">
 
-    <ImageView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/save_calorie_content"
-            android:id="@+id/image_from_camera"/>
 
     <EditText
             style="@style/AddProduct"
             android:inputType="textPersonName"
+            android:layout_marginStart="12dp"
             android:hint="Введите назввание"
-            app:layout_constraintBottom_toTopOf="@id/save_calorie_content"
-            app:layout_constraintStart_toStartOf="@id/save_calorie_content"
-            app:layout_constraintEnd_toEndOf="@id/save_calorie_content"
+            app:layout_constraintTop_toTopOf="@id/test_btn"
+            app:layout_constraintStart_toEndOf="@id/test_btn"
             android:id="@+id/save_name_product"/>
 
     <EditText
             style="@style/AddProduct"
-            android:layout_marginStart="14dp"
             android:inputType="number"
             android:hint="Калорий на 100 грамм"
             app:layout_constraintHorizontal_weight="2"
-            app:layout_constraintStart_toEndOf="@+id/image_from_camera"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/image_from_camera"
+            app:layout_constraintTop_toBottomOf="@id/save_name_product"
+            app:layout_constraintStart_toStartOf="@id/save_name_product"
             android:id="@+id/save_calorie_content"/>
 
     <Button
@@ -43,7 +32,7 @@
             android:layout_marginTop="6dp"
             android:text="fuck"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_from_camera"
+            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/test_btn"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

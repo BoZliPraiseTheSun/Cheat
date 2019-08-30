@@ -6,25 +6,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <ImageView
-            android:layout_width="0dp"
-            android:layout_height="56dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:id="@+id/image_product_eat"/>
 
     <TextView
             style="@style/PrimaryText"
             android:textSize="20dp"
             android:layout_marginStart="20dp"
-            app:layout_constraintTop_toTopOf="@id/image_product_eat"
-            app:layout_constraintStart_toEndOf="@id/image_product_eat"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/name_eat_view"/>
 
     <TextView
             style="@style/ProductEat"
-            app:layout_constraintBottom_toBottomOf="@id/image_product_eat"
+            app:layout_constraintTop_toBottomOf="@id/name_eat_view"
             app:layout_constraintStart_toStartOf="@id/name_eat_view"
             android:id="@+id/cal_eat_view"/>
 

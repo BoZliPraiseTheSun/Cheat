@@ -20,11 +20,11 @@
         <item name="android:textColor">@color/colorGray</item>
     </style>
 
-    <style name="CalNum" parent="PrimaryText">
+    <style name="TextBig" parent="PrimaryText">
         <item name="android:textSize">24dp</item>
     </style>
 
-    <style name="CalText" parent="SecondaryText">
+    <style name="TextSmall" parent="SecondaryText">
         <item name="android:textSize">14dp</item>
     </style>
 

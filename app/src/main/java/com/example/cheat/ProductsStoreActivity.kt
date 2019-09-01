@@ -47,11 +47,11 @@ class ProductsStoreActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products_store)
+        firstOpenApp()
 
 
-        mSettings =
-            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        layoutManager = LinearLayoutManager(this)
+        initializationLateInitParam()
+
 
         product_list_recycler.layoutManager = layoutManager
 
@@ -122,6 +122,12 @@ class ProductsStoreActivity : AppCompatActivity() {
         createRecyclerView(listProducts)
     }
 
+    private fun initializationLateInitParam() {
+        mSettings =
+            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        layoutManager = LinearLayoutManager(this)
+    }
+
     private fun dispatchTakePictureIntent() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         val imageFile = createImageFile()
@@ -156,6 +162,31 @@ class ProductsStoreActivity : AppCompatActivity() {
         return ((calorieContent * put_cal.progress.toString().toInt()) / 100f)
             .roundToInt()
             .toString()
+    }
+
+    private fun firstOpenApp() {
+        if (getData() == -1) {
+            listProducts.add(Product("Булгур", 342))
+            listProducts.add(Product("Яблоко", 47))
+            listProducts.add(Product("Сливочный сыр", 210))
+            listProducts.add(Product("Грудка куриная (мангал)", 175))
+            listProducts.add(Product("Нектарин", 63))
+            listProducts.add(Product("Борщ", 45))
+            listProducts.add(Product("Огурец", 12))
+            listProducts.add(Product("Помидор", 20))
+            listProducts.add(Product("Яйцо (белок)", 48))
+            listProducts.add(Product("Груша", 47))
+            listProducts.add(Product("Мандарин", 38))
+            listProducts.add(Product("Виноград", 72))
+            listProducts.add(Product("Тунец (консервы)", 96))
+            listProducts.add(Product("Яйцо", 157))
+            listProducts.add(Product("Банан", 96))
+            listProducts.add(Product("Кабачок", 24))
+            listProducts.add(Product("Картошка", 77))
+            listProducts.add(Product("Грудка куриная", 164))
+            listProducts.add(Product("Морковь", 35))
+            listProducts.add(Product("Яйцо (желток)", 354))
+        }
     }
 
     private fun createRecyclerView(list: ArrayList<Product>) {

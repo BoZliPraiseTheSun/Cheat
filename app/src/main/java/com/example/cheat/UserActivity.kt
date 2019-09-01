@@ -37,7 +37,6 @@ class UserActivity : AppCompatActivity() {
     private lateinit var mAdapter: MyAdapterFoodsEaten
 
     private val dataFormatHHmm = SimpleDateFormat("HH:mm", Locale.UK)
-    private val dataFormatDD = SimpleDateFormat("dd", Locale.UK)
     private val TAG = "UserActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,7 +107,6 @@ class UserActivity : AppCompatActivity() {
         }
     }
 
-
     private fun getListEat() {
         val gsonText = mSettings.getString(getString(R.string.list_product_eat_key), "")
         if (gsonText != "") {
@@ -173,10 +171,6 @@ class UserActivity : AppCompatActivity() {
                 Log.d(TAG, "AVG $burnCal")
                 mSettings.edit().putInt(getString(R.string.cal_burn_key), burnCal.roundToInt()).apply()
             }
-    }
-
-    private fun getData(): Int {
-        return dataFormatDD.format(Date()).toInt()
     }
 
 

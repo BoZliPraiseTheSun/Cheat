@@ -4,6 +4,14 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.ScrollView
+import java.text.SimpleDateFormat
+import java.util.*
+
+private val dataFormatDD = SimpleDateFormat("dd", Locale.UK)
+
+fun getData(): Int {
+    return dataFormatDD.format(Date()).toInt()
+}
 
 fun slowScroll(scroll_view: ScrollView, TAG: String) {
     val handler = Handler()

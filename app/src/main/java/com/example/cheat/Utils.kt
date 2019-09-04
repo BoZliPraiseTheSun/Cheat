@@ -4,6 +4,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.ScrollView
+import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,6 +22,6 @@ fun slowScroll(scroll_view: ScrollView, TAG: String) {
         } catch (e: InterruptedException) {
             Log.d(TAG, "Scroll error")
         }
-        handler.post { scroll_view.fullScroll(View.FOCUS_UP) }
+        handler.post{ scroll_view.fullScroll(View.FOCUS_UP) }
     }).start()
 }

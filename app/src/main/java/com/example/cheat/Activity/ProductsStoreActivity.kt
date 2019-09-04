@@ -1,4 +1,4 @@
-package com.example.cheat
+package com.example.cheat.Activity
 
 import android.app.Activity
 import android.content.Context
@@ -7,20 +7,19 @@ import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.SeekBar
-import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cheat.Adapter.MyAdapterProduct
+import com.example.cheat.FoodsEaten
+import com.example.cheat.Product
+import com.example.cheat.R
+import com.example.cheat.slowScroll
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_products_store.*
-import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
@@ -41,14 +40,11 @@ class ProductsStoreActivity : AppCompatActivity() {
     private lateinit var mImageUri: Uri
     private lateinit var mAdapter: MyAdapterProduct
 
-    private val listProducts: ArrayList<Product> = arrayListOf()
-    private val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.UK)
+    private val products: ArrayList<Product> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products_store)
-        firstOpenApp()
-
 
         initializationLateInitParam()
 
@@ -69,7 +65,7 @@ class ProductsStoreActivity : AppCompatActivity() {
         })
 
         deleted_product.setOnClickListener {
-            listProducts.remove(Product(product_name.text.toString(), calIn100Gram))
+            products.remove(Product(product_name.text.toString(), calIn100Gram))
             add_product.visibility = View.GONE
             mAdapter.notifyDataSetChanged()
 
@@ -86,10 +82,10 @@ class ProductsStoreActivity : AppCompatActivity() {
                 )
                 .apply()
 
-            val listEat = UserActivity.listFoodsEaten
+            val listEat = UserActivity.eatenFoods
             var createProduct = true
             if (listEat.isNotEmpty()) {
-                Log.d(TAG, "listFoodsEaten.add")
+                Log.d(TAG, "eatenFoods.add")
                 for (i in listEat) {
                     if (i.name == product_name.text.toString()) {
                         i.calorieEat += gram_to_cal_text.text.toString().toInt()
@@ -99,7 +95,7 @@ class ProductsStoreActivity : AppCompatActivity() {
                 }
             }
             if (createProduct) {
-                Log.d(TAG, "listFoodsEaten.create")
+                Log.d(TAG, "eatenFoods.create")
                 listEat.add(
                     FoodsEaten(
                         product_name.text.toString(),
@@ -119,7 +115,10 @@ class ProductsStoreActivity : AppCompatActivity() {
         }
 
         getListProduct()
-        createRecyclerView(listProducts)
+        if (products.isEmpty()) {
+            firstOpenApp()
+        }
+        createRecyclerView(products)
     }
 
     private fun initializationLateInitParam() {
@@ -128,33 +127,13 @@ class ProductsStoreActivity : AppCompatActivity() {
         layoutManager = LinearLayoutManager(this)
     }
 
-    private fun dispatchTakePictureIntent() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        val imageFile = createImageFile()
-        mImageUri = FileProvider.getUriForFile(
-            this,
-            "com.example.cheat.provider",
-            imageFile
-        )
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri)
-        startActivityForResult(intent, REQUEST_TAKE_PHOTO)
-    }
-
-    private fun createImageFile(): File {
-        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "JPEG_${timeStamp.format(Date())}_",
-            ".jpg",
-            storageDir
-        )
-    }
 
     private fun getListProduct() {
         val gsonText = mSettings.getString(getString(R.string.list_product_key), "")
         if (gsonText != "") {
             val type = object : TypeToken<ArrayList<Product>>() {}.type
-            listProducts.clear()
-            listProducts.addAll(Gson().fromJson(gsonText, type))
+            products.clear()
+            products.addAll(Gson().fromJson(gsonText, type))
         }
     }
 
@@ -164,33 +143,6 @@ class ProductsStoreActivity : AppCompatActivity() {
             .toString()
     }
 
-    private fun firstOpenApp() {
-        if (getData() == -1) {
-            listProducts.add(Product("Булгур", 342))
-            listProducts.add(Product("Яблоко", 47))
-            listProducts.add(Product("Сливочный сыр", 210))
-            listProducts.add(Product("Грудка куриная (мангал)", 175))
-            listProducts.add(Product("Нектарин", 63))
-            listProducts.add(Product("Борщ", 45))
-            listProducts.add(Product("Хлебцы Dr.Korner травы", 300))
-            listProducts.add(Product("Хлебцы Dr.Korner карамель", 320))
-            listProducts.add(Product("Огурец", 12))
-            listProducts.add(Product("Помидор", 20))
-            listProducts.add(Product("Яйцо (белок)", 48))
-            listProducts.add(Product("Груша", 47))
-            listProducts.add(Product("Мандарин", 38))
-            listProducts.add(Product("Хлеб белый", 240))
-            listProducts.add(Product("Виноград", 72))
-            listProducts.add(Product("Тунец (консервы)", 96))
-            listProducts.add(Product("Яйцо", 157))
-            listProducts.add(Product("Банан", 96))
-            listProducts.add(Product("Кабачок", 24))
-            listProducts.add(Product("Картошка", 77))
-            listProducts.add(Product("Грудка куриная", 164))
-            listProducts.add(Product("Морковь", 35))
-            listProducts.add(Product("Яйцо (желток)", 354))
-        }
-    }
 
     private fun createRecyclerView(list: ArrayList<Product>) {
         mAdapter = MyAdapterProduct(
@@ -208,13 +160,39 @@ class ProductsStoreActivity : AppCompatActivity() {
 
     }
 
+    private fun firstOpenApp() {
+        products.add(Product("Булгур", 342))
+        products.add(Product("Яблоко", 47))
+        products.add(Product("Сливочный сыр", 210))
+        products.add(Product("Грудка куриная (мангал)", 175))
+        products.add(Product("Нектарин", 63))
+        products.add(Product("Борщ", 45))
+        products.add(Product("Хлебцы Dr.Korner травы", 300))
+        products.add(Product("Хлебцы Dr.Korner карамель", 320))
+        products.add(Product("Огурец", 12))
+        products.add(Product("Помидор", 20))
+        products.add(Product("Яйцо (белок)", 48))
+        products.add(Product("Груша", 47))
+        products.add(Product("Мандарин", 38))
+        products.add(Product("Хлеб белый", 240))
+        products.add(Product("Виноград", 72))
+        products.add(Product("Тунец (консервы)", 96))
+        products.add(Product("Яйцо", 157))
+        products.add(Product("Банан", 96))
+        products.add(Product("Кабачок", 24))
+        products.add(Product("Картошка", 77))
+        products.add(Product("Грудка куриная", 164))
+        products.add(Product("Морковь", 35))
+        products.add(Product("Яйцо (желток)", 354))
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CREATE_PRODUCT -> {
                     if (data != null) {
-                        listProducts.add(
+                        products.add(
                             Product(
                                 data.getStringExtra("Name")!!,
                                 data.getIntExtra("Calorie Content", -1)
@@ -229,7 +207,7 @@ class ProductsStoreActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        val gsonText = Gson().toJson(listProducts)
+        val gsonText = Gson().toJson(products)
         mSettings.edit().putString(getString(R.string.list_product_key), gsonText).apply()
     }
 

@@ -10,7 +10,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            tools:context=".UserActivity">
+            tools:context=".Activity.UserActivity">
 
         <ProgressBar
                 android:layout_width="220dp"
@@ -30,7 +30,7 @@
                 android:id="@+id/cal_left_num_text"/>
 
         <TextView
-                style="@style/TextSmall"
+                style="@style/TextLittle"
                 android:text="Ккал осталось"
                 app:layout_constraintStart_toStartOf="@id/progress_bar"
                 app:layout_constraintEnd_toEndOf="@id/progress_bar"
@@ -39,7 +39,7 @@
                 android:id="@+id/cal_left_text"/>
 
         <TextView
-                style="@style/TextSmall"
+                style="@style/TextLittle"
                 android:text="Ккал съедено"
                 app:layout_constraintStart_toStartOf="@id/progress_bar"
                 app:layout_constraintEnd_toEndOf="@id/progress_bar"

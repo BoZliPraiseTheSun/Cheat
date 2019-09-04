@@ -7,14 +7,14 @@
         android:layout_height="wrap_content">
 
     <TextView
-            style="@style/TextBig"
+            style="@style/TextAverage"
             android:gravity="start"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:id="@+id/name_product_recycler"/>
 
     <TextView
-            style="@style/TextSmall"
+            style="@style/TextLittle"
             android:layout_marginStart="10dp"
             app:layout_constraintBaseline_toBaselineOf="@id/name_product_recycler"
             app:layout_constraintStart_toEndOf="@id/name_product_recycler"

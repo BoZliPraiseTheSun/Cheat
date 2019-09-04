@@ -1,13 +1,14 @@
-package com.example.cheat
+package com.example.cheat.Adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cheat.FoodsEaten
+import com.example.cheat.R
 import kotlinx.android.synthetic.main.view_holder_product_eat.view.*
 
-class MyAdapterFoodsEaten(private val list: ArrayList<FoodsEaten>) :
+class MyAdapterFoodsEaten(private val list: ArrayList<FoodsEaten>, val click: (FoodsEaten) -> Unit) :
     RecyclerView.Adapter<MyAdapterFoodsEaten.MyHolderProductEat>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolderProductEat {
@@ -22,12 +23,14 @@ class MyAdapterFoodsEaten(private val list: ArrayList<FoodsEaten>) :
     }
 
     override fun onBindViewHolder(holderProductsEat: MyHolderProductEat, position: Int) {
-        val listProductEat = list[position]
+        val foodEat = list[position]
         holderProductsEat.apply {
-            itemView.name_eat_view.text = listProductEat.name
-            itemView.cal_eat_view.text = listProductEat.calorieEat.toString()
-            itemView.gram_eat_view.text = listProductEat.gramsEat.toString()
-            itemView.setOnClickListener { }
+            itemView.name_eat_view.text = foodEat.name
+            itemView.cal_eat_view.text = foodEat.calorieEat.toString()
+            itemView.gram_eat_view.text = foodEat.gramsEat.toString()
+            itemView.setOnClickListener {
+                click(foodEat)
+            }
         }
     }
 

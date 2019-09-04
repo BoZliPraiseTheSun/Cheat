@@ -1,4 +1,4 @@
-package com.example.cheat
+package com.example.cheat.Activity
 
 import android.app.Activity
 import android.content.Context
@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cheat.*
+import com.example.cheat.Adapter.MyAdapterFoodsEaten
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
@@ -18,7 +20,6 @@ import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_user.*
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -26,48 +27,52 @@ import kotlin.math.roundToInt
 
 class UserActivity : AppCompatActivity() {
 
-    companion object {
-        const val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = 77
-        val listFoodsEaten: ArrayList<FoodsEaten> = arrayListOf()
-    }
-
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var fitnessOptions: FitnessOptions
     private lateinit var mAdapter: MyAdapterFoodsEaten
 
-    private val dataFormatHHmm = SimpleDateFormat("HH:mm", Locale.UK)
+    private val eatenFoods: ArrayList<FoodsEaten> = arrayListOf()
     private val TAG = "UserActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user)
 
+        mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        layoutManager = LinearLayoutManager(this)
 
-        initializationLateInitParam()
-        singInGoogleAccount()
+        initializationAdapter()
+
+        checkNextDay()
+
+        buildFitnessOptions()
+        AccountGoogle().singInGoogleAccount(this, this)
+
+        getFoodsEaten()
 
         if (mSettings.getInt(getString(R.string.cal_per_day_key), -1) == -1) {
             mSettings.edit().putInt(getString(R.string.cal_per_day_key), 1250).apply()
         }
 
-        list_eat_recycler.layoutManager = layoutManager
-
-        nextDay()
-        getListEat()
-        list_eat_recycler.adapter = mAdapter
-
         go_bay_btn.setOnClickListener {
             val intent = Intent(this, ProductsStoreActivity::class.java)
             startActivity(intent)
         }
+
+
+        list_eat_recycler.layoutManager = layoutManager
+        list_eat_recycler.adapter = mAdapter
     }
 
 
-    private fun initializationLateInitParam() {
-        mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        layoutManager = LinearLayoutManager(this)
-        mAdapter = MyAdapterFoodsEaten(listFoodsEaten)
+    private fun initializationAdapter() {
+        mAdapter = MyAdapterFoodsEaten(eatenFoods) { foodEaten ->
+            Log.d(TAG, "$foodEaten")
+        }
+    }
+
+    private fun buildFitnessOptions() {
         fitnessOptions = FitnessOptions
             .builder()
             .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
@@ -80,38 +85,28 @@ class UserActivity : AppCompatActivity() {
     }
 
 
-    private fun singInGoogleAccount() {
-        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this), fitnessOptions)) {
-            GoogleSignIn.requestPermissions(
-                this,
-                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
-                GoogleSignIn.getLastSignedInAccount(this),
-                fitnessOptions
-            )
-        }
-    }
-
-
-    private fun nextDay() {
+    private fun checkNextDay() {
         if (mSettings.getInt(getString(R.string.this_day_key), -1) != getData()) {
             val calBurnAll = mSettings.getInt(getString(R.string.cal_burn_all_key), 0)
             val calBurn = mSettings.getInt(getString(R.string.cal_burn_key), 0)
             val edit = mSettings.edit()
-            edit.putInt(getString(R.string.this_day_key), getData())
+            edit.putInt(getString(R.string.this_day_key),
+                getData()
+            )
             edit.putInt(getString(R.string.cal_burn_all_key), calBurnAll + calBurn)
             edit.putInt(getString(R.string.cal_eat_key), 0)
             edit.putInt(getString(R.string.cal_burn_key), 0)
             edit.putString(getString(R.string.list_product_eat_key), "")
             edit.apply()
-            listFoodsEaten.clear()
+            eatenFoods.clear()
         }
     }
 
-    private fun getListEat() {
+    private fun getFoodsEaten() {
         val gsonText = mSettings.getString(getString(R.string.list_product_eat_key), "")
         if (gsonText != "") {
             val type = object : TypeToken<ArrayList<FoodsEaten>>() {}.type
-            listFoodsEaten.addAll(Gson().fromJson(gsonText, type))
+            eatenFoods.addAll(Gson().fromJson(gsonText, type))
         }
     }
 
@@ -120,10 +115,8 @@ class UserActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance()
         calendar.time = Date()
         val endTime = calendar.timeInMillis
-        Log.d(TAG, "$calendar")
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
-        Log.d(TAG, "$calendar")
         val startTime = calendar.timeInMillis
 
         val builder = DataReadRequest.Builder()
@@ -145,12 +138,6 @@ class UserActivity : AppCompatActivity() {
                 var burnCal = 0f
                 val buckets = it.result!!.buckets
                 for (bucket in buckets) {
-                    Log.d(
-                        TAG,
-                        "bucket ${bucket.activity} ${getData()} ${dataFormatHHmm.format(
-                            bucket.getStartTime(TimeUnit.MILLISECONDS)
-                        )} - ${dataFormatHHmm.format(bucket.getEndTime(TimeUnit.MILLISECONDS))}"
-                    )
                     val activityName = bucket.activity.toString()
                     val dataSets = bucket.dataSets
                     if (activityName != "still" &&
@@ -160,15 +147,12 @@ class UserActivity : AppCompatActivity() {
                             Log.d(TAG, "dataSet ${dataSet.dataType}")
                             val dataPoints = dataSet.dataPoints
                             for (dataPoint in dataPoints) {
-                                Log.d(TAG, "dataPoint ${dataPoint.dataType}")
                                 val avg = dataPoint.getValue(Field.FIELD_CALORIES).asFloat()
-                                Log.d(TAG, "Kkal $avg")
                                 burnCal += avg
                             }
                         }
                     }
                 }
-                Log.d(TAG, "AVG $burnCal")
                 mSettings.edit().putInt(getString(R.string.cal_burn_key), burnCal.roundToInt()).apply()
             }
     }
@@ -193,15 +177,29 @@ class UserActivity : AppCompatActivity() {
             cal_left_num_text.text = "0"
         }
 
-        if (listFoodsEaten.isNotEmpty()) {
+        if (eatenFoods.isNotEmpty()) {
             mAdapter.notifyDataSetChanged()
         }
     }
 
-    private fun calInCoin(cal: Int): Int {
+    private fun caloriesToCoins(cal: Int): Int {
         return (cal * 0.25f).roundToInt()
     }
 
+    private fun setEatenFoods(list: ArrayList<FoodsEaten>, keyForPreferences: String) {
+        if (list.isNotEmpty()) {
+            val gsonText = Gson().toJson(list)
+            mSettings.edit().putString(keyForPreferences, gsonText).apply()
+        }
+    }
+
+    fun setBurnCaloriesInSettings() {
+        val burnCal = BurnCaloriesIvGoogleFit().getBurnCaloriesForOneDay(this)
+        mSettings
+            .edit()
+            .putInt(getString(R.string.cal_burn_key), burnCal.roundToInt())
+            .apply()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -215,16 +213,16 @@ class UserActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        accessGoogleFit()
+        setBurnCaloriesInSettings()
         reLoad()
     }
 
-    override fun onPause() {
-        super.onPause()
-        if (listFoodsEaten.isNotEmpty()) {
-            val gsonText = Gson().toJson(listFoodsEaten)
-            mSettings.edit().putString(getString(R.string.list_product_eat_key), gsonText).apply()
-        }
+    override fun onStop() {
+        super.onStop()
+        setEatenFoods(
+            eatenFoods, getString(
+                R.string.list_product_eat_key
+            ))
     }
 }
 

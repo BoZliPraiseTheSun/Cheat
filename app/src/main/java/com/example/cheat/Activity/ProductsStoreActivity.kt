@@ -13,7 +13,7 @@ import android.widget.SeekBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cheat.Adapter.MyAdapterProduct
-import com.example.cheat.FoodsEaten
+import com.example.cheat.FoodEaten
 import com.example.cheat.Product
 import com.example.cheat.R
 import com.example.cheat.slowScroll
@@ -97,7 +97,7 @@ class ProductsStoreActivity : AppCompatActivity() {
             if (createProduct) {
                 Log.d(TAG, "eatenFoods.create")
                 listEat.add(
-                    FoodsEaten(
+                    FoodEaten(
                         product_name.text.toString(),
                         gram_to_cal_text.text.toString().toInt(),
                         put_cal.progress.toString().toInt()

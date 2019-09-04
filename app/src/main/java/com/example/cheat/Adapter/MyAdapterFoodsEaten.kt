@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cheat.FoodsEaten
+import com.example.cheat.FoodEaten
 import com.example.cheat.R
 import kotlinx.android.synthetic.main.view_holder_product_eat.view.*
 
-class MyAdapterFoodsEaten(private val list: ArrayList<FoodsEaten>, val click: (FoodsEaten) -> Unit) :
+class MyAdapterFoodsEaten(private val list: ArrayList<FoodEaten>, val click: (FoodEaten) -> Unit) :
     RecyclerView.Adapter<MyAdapterFoodsEaten.MyHolderProductEat>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolderProductEat {

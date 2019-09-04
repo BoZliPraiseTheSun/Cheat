@@ -1,4 +1,4 @@
-package com.example.cheat
+package com.example.cheat.Google
 
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType

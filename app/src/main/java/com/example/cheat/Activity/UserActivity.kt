@@ -11,16 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cheat.*
 import com.example.cheat.Adapter.MyAdapterFoodsEaten
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.fitness.Fitness
-import com.google.android.gms.fitness.data.DataType
-import com.google.android.gms.fitness.data.Field
-import com.google.android.gms.fitness.request.DataReadRequest
+import com.example.cheat.Google.AccountGoogle
+import com.example.cheat.Google.HistoryGoogleFit
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_user.*
-import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
@@ -30,7 +25,7 @@ class UserActivity : AppCompatActivity() {
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var mAdapter: MyAdapterFoodsEaten
 
-    private val eatenFoods: ArrayList<FoodsEaten> = arrayListOf()
+    private val eatenFoods: ArrayList<FoodEaten> = arrayListOf()
     private val TAG = "UserActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,58 +86,18 @@ class UserActivity : AppCompatActivity() {
     private fun getFoodsEaten() {
         val gsonText = mSettings.getString(getString(R.string.list_product_eat_key), "")
         if (gsonText != "") {
-            val type = object : TypeToken<ArrayList<FoodsEaten>>() {}.type
+            val type = object : TypeToken<ArrayList<FoodEaten>>() {}.type
             eatenFoods.addAll(Gson().fromJson(gsonText, type))
         }
     }
 
 
-    private fun accessGoogleFit() {
-        val calendar = Calendar.getInstance()
-        calendar.time = Date()
-        val endTime = calendar.timeInMillis
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        val startTime = calendar.timeInMillis
-
-        val builder = DataReadRequest.Builder()
-            .aggregate(DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED)
-            .bucketByActivityType(1, TimeUnit.MILLISECONDS)
-            .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-            .build()
-
-        Fitness.getHistoryClient(this, GoogleSignIn.getLastSignedInAccount(this)!!)
-            .readData(builder)
-            .addOnSuccessListener {
-                Log.d(TAG, "accessGoogle Success")
-            }
-            .addOnFailureListener {
-                Log.d(TAG, "accessGoogle Failure")
-            }
-            .addOnCompleteListener {
-                Log.d(TAG, "accessGoogle Complete")
-                var burnCal = 0f
-                val buckets = it.result!!.buckets
-                for (bucket in buckets) {
-                    val activityName = bucket.activity.toString()
-                    val dataSets = bucket.dataSets
-                    if (activityName != "still" &&
-                        activityName != "unknown" &&
-                        activityName != "in_vehicle") {
-                        for (dataSet in dataSets) {
-                            Log.d(TAG, "dataSet ${dataSet.dataType}")
-                            val dataPoints = dataSet.dataPoints
-                            for (dataPoint in dataPoints) {
-                                val avg = dataPoint.getValue(Field.FIELD_CALORIES).asFloat()
-                                burnCal += avg
-                            }
-                        }
-                    }
-                }
-                mSettings.edit().putInt(getString(R.string.cal_burn_key), burnCal.roundToInt()).apply()
-            }
+    private fun setEatenFoods(list: ArrayList<FoodEaten>, keyForPreferences: String) {
+        if (list.isNotEmpty()) {
+            val gsonText = Gson().toJson(list)
+            mSettings.edit().putString(keyForPreferences, gsonText).apply()
+        }
     }
-
 
     private fun reLoad() {
         val calPerDay = mSettings.getInt(getString(R.string.cal_per_day_key), 0)
@@ -172,15 +127,8 @@ class UserActivity : AppCompatActivity() {
         return (cal * 0.25f).roundToInt()
     }
 
-    private fun setEatenFoods(list: ArrayList<FoodsEaten>, keyForPreferences: String) {
-        if (list.isNotEmpty()) {
-            val gsonText = Gson().toJson(list)
-            mSettings.edit().putString(keyForPreferences, gsonText).apply()
-        }
-    }
-
     private fun setBurnCaloriesInSettings() {
-        val burnCal = HistoryGoogleFit().getBurnCaloriesPerOneDay(this)
+        val burnCal = HistoryGoogleFit().getBurnCaloriesPerThisDay(this)
         mSettings
             .edit()
             .putInt(getString(R.string.cal_burn_key), burnCal.roundToInt())

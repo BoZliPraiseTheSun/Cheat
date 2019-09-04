@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ScrollView
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.*
 

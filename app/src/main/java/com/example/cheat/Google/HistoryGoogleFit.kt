@@ -1,4 +1,4 @@
-package com.example.cheat
+package com.example.cheat.Google
 
 import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -10,8 +10,8 @@ import java.util.concurrent.TimeUnit
 
 class HistoryGoogleFit {
 
-    fun getBurnCaloriesPerOneDay(context: Context): Float {
-        var burnCaloriesPerOneDay = 0f
+    fun getBurnCaloriesPerThisDay(context: Context): Float {
+        var burnCaloriesPerThisDay = 0f
         Fitness.getHistoryClient(context, GoogleSignIn.getLastSignedInAccount(context)!!)
             .readData(getDataReadRequestBuilder(getTodayZeroTime(), getValidTime()))
             .addOnSuccessListener {
@@ -20,10 +20,10 @@ class HistoryGoogleFit {
             }
             .addOnCompleteListener {
                 val buckets = removeNoActivity(it.result!!.buckets)
-                burnCaloriesPerOneDay = getBurnCalories(buckets)
+                burnCaloriesPerThisDay = getBurnCalories(buckets)
 
             }
-        return burnCaloriesPerOneDay
+        return burnCaloriesPerThisDay
     }
 
     private fun getDataReadRequestBuilder(startTime: Long, endTime: Long): DataReadRequest {

@@ -1,7 +1,8 @@
-package com.example.cheat
+package com.example.cheat.Google
 
 import android.app.Activity
 import android.content.Context
+import com.example.cheat.GOOGLE_FIT_PERMISSIONS_REQUEST_CODE
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 
 class AccountGoogle {

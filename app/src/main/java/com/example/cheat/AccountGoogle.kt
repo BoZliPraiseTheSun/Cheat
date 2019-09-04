@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 
-class AccountGoogle() {
+class AccountGoogle {
     fun singInGoogleAccount(context: Context, activity: Activity) {
         val fitnessOptions = FitnessOptions().fitnessOptions
         if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(context), fitnessOptions)) {

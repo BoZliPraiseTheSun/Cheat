@@ -3,7 +3,7 @@ package com.example.cheat
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 
-class FitnessOptions() {
+class FitnessOptions {
     val fitnessOptions = FitnessOptions
         .builder()
         .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)

@@ -13,7 +13,6 @@ import com.example.cheat.*
 import com.example.cheat.Adapter.MyAdapterFoodsEaten
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
-import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
@@ -29,7 +28,6 @@ class UserActivity : AppCompatActivity() {
 
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
-    private lateinit var fitnessOptions: FitnessOptions
     private lateinit var mAdapter: MyAdapterFoodsEaten
 
     private val eatenFoods: ArrayList<FoodsEaten> = arrayListOf()
@@ -46,7 +44,7 @@ class UserActivity : AppCompatActivity() {
 
         checkNextDay()
 
-        buildFitnessOptions()
+
         AccountGoogle().singInGoogleAccount(this, this)
 
         getFoodsEaten()
@@ -70,18 +68,6 @@ class UserActivity : AppCompatActivity() {
         mAdapter = MyAdapterFoodsEaten(eatenFoods) { foodEaten ->
             Log.d(TAG, "$foodEaten")
         }
-    }
-
-    private fun buildFitnessOptions() {
-        fitnessOptions = FitnessOptions
-            .builder()
-            .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.AGGREGATE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.TYPE_BASAL_METABOLIC_RATE, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.AGGREGATE_BASAL_METABOLIC_RATE_SUMMARY, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.TYPE_ACTIVITY_SEGMENT, FitnessOptions.ACCESS_READ)
-            .addDataType(DataType.AGGREGATE_ACTIVITY_SUMMARY, FitnessOptions.ACCESS_READ)
-            .build()
     }
 
 
@@ -193,8 +179,8 @@ class UserActivity : AppCompatActivity() {
         }
     }
 
-    fun setBurnCaloriesInSettings() {
-        val burnCal = BurnCaloriesIvGoogleFit().getBurnCaloriesForOneDay(this)
+    private fun setBurnCaloriesInSettings() {
+        val burnCal = HistoryGoogleFit().getBurnCaloriesPerOneDay(this)
         mSettings
             .edit()
             .putInt(getString(R.string.cal_burn_key), burnCal.roundToInt())
@@ -219,10 +205,7 @@ class UserActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        setEatenFoods(
-            eatenFoods, getString(
-                R.string.list_product_eat_key
-            ))
+        setEatenFoods(eatenFoods, getString(R.string.list_product_eat_key))
     }
 }
 

@@ -1,11 +1,10 @@
-package com.example.cheat.Activity
+package com.example.cheat.activity
 
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.cheat.R
-import com.soundcloud.android.crop.Crop
 import kotlinx.android.synthetic.main.activity_add_new_product.*
 
 class AddNewProductActivity : AppCompatActivity() {

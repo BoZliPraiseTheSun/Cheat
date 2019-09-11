@@ -1,4 +1,4 @@
-package com.example.cheat.Google
+package com.example.cheat.google
 
 import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignIn

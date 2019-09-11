@@ -1,4 +1,4 @@
-package com.example.cheat.Google
+package com.example.cheat.google
 
 import android.app.Activity
 import android.content.Context

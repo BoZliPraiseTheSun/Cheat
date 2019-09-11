@@ -1,4 +1,4 @@
-package com.example.cheat.Adapter
+package com.example.cheat.adapter
 
 import android.view.LayoutInflater
 import android.view.View

@@ -1,4 +1,4 @@
-package com.example.cheat.Activity
+package com.example.cheat.activity
 
 import android.app.Activity
 import android.content.Context
@@ -10,22 +10,22 @@ import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cheat.*
-import com.example.cheat.Adapter.MyAdapterFoodsEaten
-import com.example.cheat.Google.AccountGoogle
-import com.example.cheat.Google.HistoryGoogleFit
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.example.cheat.adapter.MyAdapterFoodsEaten
+import com.example.cheat.google.AccountGoogle
+import com.example.cheat.google.HistoryGoogleFit
 import kotlinx.android.synthetic.main.activity_user.*
-import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 class UserActivity : AppCompatActivity() {
+
+    companion object {
+        lateinit var eatenFoods: ListFoodsEaten
+    }
 
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var mAdapter: MyAdapterFoodsEaten
 
-    private val eatenFoods: ArrayList<FoodEaten> = arrayListOf()
     private val TAG = "UserActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,20 +33,18 @@ class UserActivity : AppCompatActivity() {
         setContentView(R.layout.activity_user)
 
         mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        eatenFoods = ListFoodsEaten(mSettings)
         layoutManager = LinearLayoutManager(this)
 
         initializationAdapter()
 
-        checkNextDay()
-
-
         AccountGoogle().singInGoogleAccount(this, this)
-
-        getFoodsEaten()
 
         if (mSettings.getInt(getString(R.string.cal_per_day_key), -1) == -1) {
             mSettings.edit().putInt(getString(R.string.cal_per_day_key), 1250).apply()
         }
+
+        checkNextDay()
 
         go_bay_btn.setOnClickListener {
             val intent = Intent(this, ProductsStoreActivity::class.java)
@@ -60,7 +58,7 @@ class UserActivity : AppCompatActivity() {
 
 
     private fun initializationAdapter() {
-        mAdapter = MyAdapterFoodsEaten(eatenFoods) { foodEaten ->
+        mAdapter = MyAdapterFoodsEaten(eatenFoods.listFoodsEaten) { foodEaten ->
             Log.d(TAG, "$foodEaten")
         }
     }
@@ -70,32 +68,16 @@ class UserActivity : AppCompatActivity() {
         if (mSettings.getInt(getString(R.string.this_day_key), -1) != getData()) {
             val calBurnAll = mSettings.getInt(getString(R.string.cal_burn_all_key), 0)
             val calBurn = mSettings.getInt(getString(R.string.cal_burn_key), 0)
+            val daysOnDiet = mSettings.getInt(getString(R.string.days_on_diet), 0)
             val edit = mSettings.edit()
-            edit.putInt(getString(R.string.this_day_key),
-                getData()
-            )
+            edit.putInt(getString(R.string.this_day_key), getData())
             edit.putInt(getString(R.string.cal_burn_all_key), calBurnAll + calBurn)
             edit.putInt(getString(R.string.cal_eat_key), 0)
             edit.putInt(getString(R.string.cal_burn_key), 0)
             edit.putString(getString(R.string.list_product_eat_key), "")
+            edit.putInt(getString(R.string.days_on_diet), daysOnDiet + 1)
             edit.apply()
-            eatenFoods.clear()
-        }
-    }
-
-    private fun getFoodsEaten() {
-        val gsonText = mSettings.getString(getString(R.string.list_product_eat_key), "")
-        if (gsonText != "") {
-            val type = object : TypeToken<ArrayList<FoodEaten>>() {}.type
-            eatenFoods.addAll(Gson().fromJson(gsonText, type))
-        }
-    }
-
-
-    private fun setEatenFoods(list: ArrayList<FoodEaten>, keyForPreferences: String) {
-        if (list.isNotEmpty()) {
-            val gsonText = Gson().toJson(list)
-            mSettings.edit().putString(keyForPreferences, gsonText).apply()
+            eatenFoods.listFoodsEaten.clear()
         }
     }
 
@@ -118,7 +100,9 @@ class UserActivity : AppCompatActivity() {
             cal_left_num_text.text = "0"
         }
 
-        if (eatenFoods.isNotEmpty()) {
+        view_days_diet.text = mSettings.getInt(getString(R.string.days_on_diet), 0).toString()
+
+        if (eatenFoods.listFoodsEaten.isNotEmpty()) {
             mAdapter.notifyDataSetChanged()
         }
     }
@@ -153,7 +137,7 @@ class UserActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        setEatenFoods(eatenFoods, getString(R.string.list_product_eat_key))
+        eatenFoods.setEatenFoods()
     }
 }
 

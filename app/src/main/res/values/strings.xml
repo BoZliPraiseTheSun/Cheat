@@ -7,5 +7,6 @@
     <string name="list_product_key">listEatProduct</string>
     <string name="list_product_eat_key">listProduct</string>
     <string name="this_day_key">thisDay</string>
+    <string name="days_on_diet">daysOnDiet</string>
     <string name="preference_file_key">mSettings</string>
 </resources>

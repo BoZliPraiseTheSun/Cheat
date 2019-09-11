@@ -18,11 +18,11 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Activity.AddNewProductActivity">
+        <activity android:name=".activity.AddNewProductActivity">
         </activity>
-        <activity android:name=".Activity.ProductsStoreActivity">
+        <activity android:name=".activity.ProductsStoreActivity">
         </activity>
-        <activity android:name=".Activity.UserActivity">
+        <activity android:name=".activity.UserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

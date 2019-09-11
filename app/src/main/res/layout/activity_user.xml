@@ -1,93 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:padding="16dp"
-            tools:context=".Activity.UserActivity">
+            tools:context=".activity.UserActivity">
+
+        <TextView
+                android:id="@+id/view_days_diet"
+                android:text="0"
+                style="@style/TextAverage"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toStartOf="@id/coin"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+                android:id="@+id/coin"
+                style="@style/TextAverage"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+                android:id="@+id/refresh_days_diet"
+                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:text="refresh data"
+                android:textSize="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="220dp"
                 android:layout_height="220dp"
-                style="?android:attr/progressBarStyleHorizontal"
                 android:progressDrawable="@drawable/custom_progress_bar"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:id="@+id/progress_bar"/>
+                app:layout_constraintTop_toBottomOf="@id/refresh_days_diet" />
 
         <TextView
+                android:id="@+id/cal_left_num_text"
                 style="@style/TextBig"
-                app:layout_constraintStart_toStartOf="@id/cal_left_text"
-                app:layout_constraintEnd_toEndOf="@id/cal_left_text"
                 app:layout_constraintBottom_toTopOf="@id/cal_left_text"
-                android:id="@+id/cal_left_num_text"/>
+                app:layout_constraintEnd_toEndOf="@id/cal_left_text"
+                app:layout_constraintStart_toStartOf="@id/cal_left_text" />
 
         <TextView
+                android:id="@+id/cal_left_text"
                 style="@style/TextLittle"
                 android:text="Ккал осталось"
-                app:layout_constraintStart_toStartOf="@id/progress_bar"
-                app:layout_constraintEnd_toEndOf="@id/progress_bar"
-                app:layout_constraintTop_toTopOf="@id/progress_bar"
                 app:layout_constraintBottom_toTopOf="@id/cal_eat_text"
-                android:id="@+id/cal_left_text"/>
+                app:layout_constraintEnd_toEndOf="@id/progress_bar"
+                app:layout_constraintStart_toStartOf="@id/progress_bar"
+                app:layout_constraintTop_toTopOf="@id/progress_bar" />
 
         <TextView
+                android:id="@+id/cal_eat_text"
                 style="@style/TextLittle"
                 android:text="Ккал съедено"
-                app:layout_constraintStart_toStartOf="@id/progress_bar"
-                app:layout_constraintEnd_toEndOf="@id/progress_bar"
-                app:layout_constraintTop_toBottomOf="@id/cal_left_text"
                 app:layout_constraintBottom_toBottomOf="@id/progress_bar"
-                android:id="@+id/cal_eat_text"/>
+                app:layout_constraintEnd_toEndOf="@id/progress_bar"
+                app:layout_constraintStart_toStartOf="@id/progress_bar"
+                app:layout_constraintTop_toBottomOf="@id/cal_left_text" />
 
         <TextView
+                android:id="@+id/cal_ean_num_text"
                 style="@style/TextBig"
-                app:layout_constraintStart_toStartOf="@id/cal_eat_text"
                 app:layout_constraintEnd_toEndOf="@id/cal_eat_text"
-                app:layout_constraintTop_toBottomOf="@id/cal_eat_text"
-                android:id="@+id/cal_ean_num_text"/>
+                app:layout_constraintStart_toStartOf="@id/cal_eat_text"
+                app:layout_constraintTop_toBottomOf="@id/cal_eat_text" />
 
 
         <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_eat_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="30dp"
                 android:layout_marginTop="28dp"
-                app:layout_constraintTop_toBottomOf="@id/progress_bar"
-                android:id="@+id/list_eat_recycler">
+                android:minHeight="30dp"
+                app:layout_constraintTop_toBottomOf="@id/progress_bar">
 
         </androidx.recyclerview.widget.RecyclerView>
 
         <TextView
+                android:id="@+id/burn_cal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@id/go_bay_btn"
-                app:layout_constraintBottom_toTopOf="@id/coin"
                 app:layout_constraintEnd_toStartOf="@id/go_bay_btn"
-                android:id="@+id/burn_cal"/>
-
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/burn_cal"
-                app:layout_constraintTop_toBottomOf="@id/burn_cal"
-                app:layout_constraintBottom_toBottomOf="@id/go_bay_btn"
-                android:id="@+id/coin"/>
+                app:layout_constraintTop_toTopOf="@id/go_bay_btn" />
 
         <Button
+                android:id="@+id/go_bay_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="BAY"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:id="@+id/go_bay_btn"/>
+                app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

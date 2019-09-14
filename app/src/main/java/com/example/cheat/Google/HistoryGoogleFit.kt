@@ -1,6 +1,7 @@
 package com.example.cheat.google
 
 import android.content.Context
+import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.data.*
@@ -14,15 +15,15 @@ class HistoryGoogleFit {
         var burnCaloriesPerThisDay = 0f
         Fitness.getHistoryClient(context, GoogleSignIn.getLastSignedInAccount(context)!!)
             .readData(getDataReadRequestBuilder(getTodayZeroTime(), getValidTime()))
-            .addOnSuccessListener {
-            }
             .addOnFailureListener {
             }
             .addOnCompleteListener {
                 val buckets = removeNoActivity(it.result!!.buckets)
                 burnCaloriesPerThisDay = getBurnCalories(buckets)
+                Log.d("Activity", "$burnCaloriesPerThisDay in")
 
             }
+        Log.d("Activity", "$burnCaloriesPerThisDay out")
         return burnCaloriesPerThisDay
     }
 
@@ -38,9 +39,9 @@ class HistoryGoogleFit {
         val noValidBuckets: MutableList<Bucket> = arrayListOf()
         for (bucket in buckets) {
             val activityName = bucket.activity.toString()
-            if (activityName != "still" &&
-                activityName != "unknown" &&
-                activityName != "in_vehicle"
+            if (activityName == "still" ||
+                activityName == "unknown" ||
+                activityName == "in_vehicle"
             ) {
                 noValidBuckets.add(bucket)
             }

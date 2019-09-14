@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        tools:context=".activity.ProductAddEatActivity">
+
+    <TextView
+            android:id="@+id/product_name"
+            style="@style/PrimaryText"
+            android:textSize="26dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+            android:id="@+id/gram_100"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="180dp"
+            android:max="5"
+            android:progress="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/product_name" />
+
+    <SeekBar
+            android:id="@+id/gram_10"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="22dp"
+            android:max="9"
+            android:progress="0"
+            app:layout_constraintStart_toStartOf="@id/gram_100"
+            app:layout_constraintTop_toBottomOf="@id/gram_100" />
+
+    <SeekBar
+            android:id="@+id/gram_1"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="22dp"
+            android:max="9"
+            android:progress="0"
+            app:layout_constraintStart_toStartOf="@id/gram_100"
+            app:layout_constraintTop_toBottomOf="@id/gram_10" />
+
+    <TextView
+            android:id="@+id/view_gram"
+            style="@style/TextListener"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginEnd="26dp"
+            android:layout_marginBottom="10dp"
+            android:text="0"
+            app:layout_constraintBottom_toTopOf="@id/gram_100"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+            android:id="@+id/deleted_product"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="12dp"
+            android:text="Del"
+            app:layout_constraintBottom_toBottomOf="@id/add_product_btn"
+            app:layout_constraintEnd_toStartOf="@id/add_product_btn"
+            app:layout_constraintTop_toTopOf="@id/add_product_btn" />
+
+    <ImageButton
+            android:id="@+id/add_product_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_add_btn"
+            android:src="@drawable/ic_eat"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="@id/gram_1"
+            app:layout_constraintTop_toBottomOf="@id/gram_1" />
+
+    <TextView
+            android:id="@+id/text_view"
+            style="@style/TextListener"
+            android:layout_marginTop="6dp"
+            android:text="Ккал: "
+            app:layout_constraintStart_toStartOf="@id/gram_1"
+            app:layout_constraintTop_toBottomOf="@id/gram_1" />
+
+    <TextView
+            android:id="@+id/gram_to_cal_text"
+            style="@style/TextListener"
+            app:layout_constraintBaseline_toBaselineOf="@id/text_view"
+            app:layout_constraintStart_toEndOf="@id/text_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

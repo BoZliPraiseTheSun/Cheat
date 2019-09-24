@@ -18,25 +18,6 @@ import kotlinx.android.synthetic.main.activity_user.*
 import kotlin.math.roundToInt
 
 class UserActivity : MvpAppCompatActivity(), UserView {
-    override fun installCaloriesEatInSecondaryProgressBar(calories: Int) {
-        progress_bar.secondaryProgress = calories
-    }
-
-    override fun installCalPerDayInProgressBar(calories: Int) {
-        progress_bar.max = calories
-    }
-
-    override fun showDaysOnDiet(days: Int) {
-        view_days_diet.text = days.toString()
-    }
-
-    override fun getSettings(): SharedPreferences {
-        return getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-    }
-
-    override fun showBurnCal(burnCal: Int) {
-        burn_cal.text = burnCal.toString()
-    }
 
     companion object {
         lateinit var eatenFoods: ListFoodsEaten
@@ -56,6 +37,7 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         setContentView(R.layout.activity_user)
 
         mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        userPresenter = UserPresenter(getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE))
         eatenFoods = ListFoodsEaten(mSettings)
         layoutManager = LinearLayoutManager(this)
 
@@ -84,50 +66,19 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         }
     }
 
-
-    private fun checkNextDay() {
-        if (mSettings.getInt(getString(R.string.this_day_key), -1) != getData()) {
-            val calBurnAll = mSettings.getInt(getString(R.string.cal_burn_all_key), 0)
-            val calBurn = mSettings.getInt(getString(R.string.cal_burn_key), 0)
-            val daysOnDiet = mSettings.getInt(getString(R.string.days_on_diet), 0)
-            val edit = mSettings.edit()
-            edit.putInt(getString(R.string.this_day_key), getData())
-            edit.putInt(getString(R.string.cal_burn_all_key), calBurnAll + calBurn)
-            edit.putInt(getString(R.string.cal_eat_key), 0)
-            edit.putInt(getString(R.string.cal_burn_key), 0)
-            edit.putInt(getString(R.string.days_on_diet), daysOnDiet + 1)
-            edit.apply()
-            eatenFoods.listFoodsEaten.clear()
-        }
-    }
-
     private fun reLoad() {
-        val calPerDay = mSettings.getInt(getString(R.string.cal_per_day_key), 0)
-        val calBurn = mSettings.getInt(getString(R.string.cal_burn_key), 0)
-        val calBurnAll = mSettings.getInt(getString(R.string.cal_burn_all_key), 0)
-        val calEat = mSettings.getInt(getString(R.string.cal_eat_key), 0)
+        userPresenter.installCalPerDayInProgressBar()
+        userPresenter.installCaloriesEatInSecondaryProgressBar()
+        userPresenter.progressInProgressBar()
 
-        progress_bar.max = (calPerDay + calBurn) * 2
-        progress_bar.secondaryProgress = calEat
-        progress_bar.progress = calEat
-
-        burn_cal.text = calBurn.toString()
         userPresenter.showBurnCal()
-        coin.text = (calBurnAll + calBurn).toString()
 
-        cal_ean_num_text.text = calEat.toString()
-        cal_left_num_text.text = ((calPerDay + calBurn) - calEat).toString()
-        if (cal_left_num_text.text.toString().toInt() < 0) {
-            cal_left_num_text.text = "0"
-        }
+        userPresenter.showCaloriesEat()
+        userPresenter.showCaloriesLeft()
 
-        view_days_diet.text = mSettings.getInt(getString(R.string.days_on_diet), 0).toString()
+        userPresenter.showDaysOnDiet()
 
         mAdapter.notifyDataSetChanged()
-    }
-
-    private fun caloriesToCoins(cal: Int): Int {
-        return (cal * 0.25f).roundToInt()
     }
 
     private fun setBurnCaloriesInSettings() {
@@ -150,7 +101,7 @@ class UserActivity : MvpAppCompatActivity(), UserView {
 
     override fun onStart() {
         super.onStart()
-        checkNextDay()
+        userPresenter.checkNextDay()
         reLoad()
     }
 
@@ -162,6 +113,36 @@ class UserActivity : MvpAppCompatActivity(), UserView {
     override fun onStop() {
         super.onStop()
         eatenFoods.setEatenFoods()
+    }
+
+
+
+    override fun installCaloriesEatInSecondaryProgressBar(calories: Int) {
+        progress_bar.secondaryProgress = calories
+    }
+
+    override fun installCalPerDayInProgressBar(calories: Int) {
+        progress_bar.max = calories
+    }
+
+    override fun progressInProgressBar(caloriesEat: Int) {
+        progress_bar.progress = caloriesEat
+    }
+
+    override fun showDaysOnDiet(days: Int) {
+        view_days_diet.text = days.toString()
+    }
+
+    override fun showCaloriesEat(calories: Int) {
+        cal_eat_num_text.text = calories.toString()
+    }
+
+    override fun showCaloriesLeft(calories: Int) {
+        cal_left_num_text.text = calories.toString()
+    }
+
+    override fun showBurnCal(burnCal: Int) {
+        burn_cal.text = burnCal.toString()
     }
 }
 

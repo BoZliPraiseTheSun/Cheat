@@ -6,19 +6,17 @@ import com.google.gson.reflect.TypeToken
 
 class ListFoodsEaten(private val settings: SharedPreferences) {
     val listFoodsEaten: ArrayList<FoodEaten> = arrayListOf()
-    private val keyPreferences = "list_product_eat_key"
-
+    private val keyPreferencesEat = "list_product_eat_key"
 
 
     fun setEatenFoods() {
-        if (listFoodsEaten.isNotEmpty()) {
-            val gsonText = Gson().toJson(listFoodsEaten)
-            settings.edit().putString(keyPreferences, gsonText).apply()
-        }
+        val gsonText = Gson().toJson(listFoodsEaten)
+        settings.edit().putString(keyPreferencesEat, gsonText).apply()
+
     }
 
     fun getFoodsEaten() {
-        val gsonText = settings.getString(keyPreferences, "")
+        val gsonText = settings.getString(keyPreferencesEat, "")
         if (gsonText != "") {
             val type = object : TypeToken<ArrayList<FoodEaten>>() {}.type
             listFoodsEaten.addAll(Gson().fromJson(gsonText, type))

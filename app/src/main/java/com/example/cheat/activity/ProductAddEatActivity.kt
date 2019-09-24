@@ -1,11 +1,9 @@
 package com.example.cheat.activity
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.SeekBar
 import com.example.cheat.FoodEaten
 import com.example.cheat.R
@@ -14,7 +12,6 @@ import kotlin.math.roundToInt
 
 class ProductAddEatActivity : AppCompatActivity() {
 
-    var calIn100Gram = 0
     private lateinit var mSettings: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,13 +21,15 @@ class ProductAddEatActivity : AppCompatActivity() {
         mSettings =
             getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        calIn100Gram = intent.getIntExtra("calories", 0)
-        product_name.text = intent.getStringExtra("name")
+        val position = intent.getIntExtra("calories", 0)
+        val product = ProductsStoreActivity.products.listProducts[position]
+        product_name.text = product.name
+        val calorieContent = product.calorieContent
 
         gram_100.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 setGramText()
-                gram_to_cal_text.text = viewCal(calIn100Gram, p1 * 100, gram_10.progress * 10, gram_1.progress)
+                gram_to_cal_text.text = viewCal(calorieContent, p1 * 100, gram_10.progress * 10, gram_1.progress)
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -43,7 +42,7 @@ class ProductAddEatActivity : AppCompatActivity() {
         gram_10.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 setGramText()
-                gram_to_cal_text.text = viewCal(calIn100Gram, gram_100.progress * 100, p1 * 10, gram_1.progress)
+                gram_to_cal_text.text = viewCal(calorieContent, gram_100.progress * 100, p1 * 10, gram_1.progress)
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -56,7 +55,7 @@ class ProductAddEatActivity : AppCompatActivity() {
         gram_1.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
                 setGramText()
-                gram_to_cal_text.text = viewCal(calIn100Gram, gram_100.progress * 100, gram_10.progress * 10, p1)
+                gram_to_cal_text.text = viewCal(calorieContent, gram_100.progress * 100, gram_10.progress * 10, p1)
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -68,6 +67,7 @@ class ProductAddEatActivity : AppCompatActivity() {
 
 
         add_product_btn.setOnClickListener {
+            product.rank++
             val calEat = mSettings.getInt(getString(R.string.cal_eat_key), 0)
             mSettings
                 .edit()

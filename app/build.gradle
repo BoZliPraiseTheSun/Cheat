@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.1'
@@ -42,6 +44,16 @@ dependencies {
 
 
     implementation 'com.android.support:multidex:1.0.3'
+
+    kapt 'com.arello-mobile:moxy-compiler:1.5.5'
+
+    annotationProcessor 'com.arello-mobile:moxy-compiler:1.5.5'
+
+    implementation 'com.arello-mobile:moxy:1.5.5'
+    implementation 'tech.schoolhelper:moxy-x-material:1.7.0'
+
+    implementation 'tech.schoolhelper:moxy-x-androidx:1.7.0'
+
 
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     testImplementation 'junit:junit:4.12'

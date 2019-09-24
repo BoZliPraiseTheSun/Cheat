@@ -4,11 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.presenter.InjectPresenter
 import com.example.cheat.*
 import com.example.cheat.adapter.MyAdapterFoodsEaten
 import com.example.cheat.google.AccountGoogle
@@ -16,11 +17,33 @@ import com.example.cheat.google.HistoryGoogleFit
 import kotlinx.android.synthetic.main.activity_user.*
 import kotlin.math.roundToInt
 
-class UserActivity : AppCompatActivity() {
+class UserActivity : MvpAppCompatActivity(), UserView {
+    override fun installCaloriesEatInSecondaryProgressBar(calories: Int) {
+        progress_bar.secondaryProgress = calories
+    }
+
+    override fun installCalPerDayInProgressBar(calories: Int) {
+        progress_bar.max = calories
+    }
+
+    override fun showDaysOnDiet(days: Int) {
+        view_days_diet.text = days.toString()
+    }
+
+    override fun getSettings(): SharedPreferences {
+        return getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+    }
+
+    override fun showBurnCal(burnCal: Int) {
+        burn_cal.text = burnCal.toString()
+    }
 
     companion object {
         lateinit var eatenFoods: ListFoodsEaten
     }
+
+    @InjectPresenter
+    lateinit var userPresenter: UserPresenter
 
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
@@ -43,8 +66,6 @@ class UserActivity : AppCompatActivity() {
         if (mSettings.getInt(getString(R.string.cal_per_day_key), -1) == -1) {
             mSettings.edit().putInt(getString(R.string.cal_per_day_key), 1250).apply()
         }
-
-        checkNextDay()
 
         go_bay_btn.setOnClickListener {
             val intent = Intent(this, ProductsStoreActivity::class.java)
@@ -74,7 +95,6 @@ class UserActivity : AppCompatActivity() {
             edit.putInt(getString(R.string.cal_burn_all_key), calBurnAll + calBurn)
             edit.putInt(getString(R.string.cal_eat_key), 0)
             edit.putInt(getString(R.string.cal_burn_key), 0)
-            edit.putString(getString(R.string.list_product_eat_key), "")
             edit.putInt(getString(R.string.days_on_diet), daysOnDiet + 1)
             edit.apply()
             eatenFoods.listFoodsEaten.clear()
@@ -92,6 +112,7 @@ class UserActivity : AppCompatActivity() {
         progress_bar.progress = calEat
 
         burn_cal.text = calBurn.toString()
+        userPresenter.showBurnCal()
         coin.text = (calBurnAll + calBurn).toString()
 
         cal_ean_num_text.text = calEat.toString()
@@ -102,9 +123,7 @@ class UserActivity : AppCompatActivity() {
 
         view_days_diet.text = mSettings.getInt(getString(R.string.days_on_diet), 0).toString()
 
-        if (eatenFoods.listFoodsEaten.isNotEmpty()) {
-            mAdapter.notifyDataSetChanged()
-        }
+        mAdapter.notifyDataSetChanged()
     }
 
     private fun caloriesToCoins(cal: Int): Int {
@@ -129,11 +148,15 @@ class UserActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        checkNextDay()
+        reLoad()
+    }
+
     override fun onResume() {
         super.onResume()
         setBurnCaloriesInSettings()
-        checkNextDay()
-        reLoad()
     }
 
     override fun onStop() {

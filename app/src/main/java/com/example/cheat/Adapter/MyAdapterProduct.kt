@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.view_holder_product.view.*
 
 class MyAdapterProduct(
     private val list: ArrayList<Product>,
-    val click: (Product) -> Unit
+    val click: (Int) -> Unit
 ) : RecyclerView.Adapter<MyAdapterProduct.MyHolderProduct>() {
 
     val TAG = "ActivityAdapter"
@@ -31,7 +31,7 @@ class MyAdapterProduct(
             itemView.cal_product_text_recycler.text = listProduct.calorieContent.toString()
 
             itemView.setOnClickListener {
-                click(listProduct)
+                click(position)
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.cheat.activity
 
 import com.arellomobile.mvp.MvpView
+import com.example.cheat.FoodEaten
 
 interface UserView: MvpView {
 
@@ -17,5 +18,7 @@ interface UserView: MvpView {
     fun progressInProgressBar(calories: Int)
 
     fun installCaloriesEatInSecondaryProgressBar(calories: Int)
+
+    fun getProductEat(list: ArrayList<FoodEaten>)
 
 }

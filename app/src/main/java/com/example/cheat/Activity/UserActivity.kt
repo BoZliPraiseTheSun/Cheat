@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.cheat.*
 import com.example.cheat.adapter.MyAdapterFoodsEaten
 import com.example.cheat.google.AccountGoogle
@@ -20,11 +21,18 @@ import kotlin.math.roundToInt
 class UserActivity : MvpAppCompatActivity(), UserView {
 
     companion object {
-        lateinit var eatenFoods: ListFoodsEaten
+        val eatenFoods = arrayListOf<FoodEaten>()
     }
+
 
     @InjectPresenter
     lateinit var userPresenter: UserPresenter
+
+    @ProvidePresenter
+    fun provideUserPresenter(): UserPresenter {
+        return UserPresenter(getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE))
+    }
+
 
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
@@ -37,11 +45,9 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         setContentView(R.layout.activity_user)
 
         mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        userPresenter = UserPresenter(getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE))
-        eatenFoods = ListFoodsEaten(mSettings)
+        userPresenter.getProductEat()
         layoutManager = LinearLayoutManager(this)
 
-        initializationAdapter()
 
         AccountGoogle().singInGoogleAccount(this, this)
 
@@ -54,17 +60,15 @@ class UserActivity : MvpAppCompatActivity(), UserView {
             startActivity(intent)
         }
 
+        mAdapter = MyAdapterFoodsEaten(eatenFoods) { foodEaten ->
+            Log.d(TAG, "$foodEaten")
+        }
 
         list_eat_recycler.layoutManager = layoutManager
         list_eat_recycler.adapter = mAdapter
     }
 
 
-    private fun initializationAdapter() {
-        mAdapter = MyAdapterFoodsEaten(eatenFoods.listFoodsEaten) { foodEaten ->
-            Log.d(TAG, "$foodEaten")
-        }
-    }
 
     private fun reLoad() {
         userPresenter.installCalPerDayInProgressBar()
@@ -81,13 +85,6 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         mAdapter.notifyDataSetChanged()
     }
 
-    private fun setBurnCaloriesInSettings() {
-        val burnCal = HistoryGoogleFit().getBurnCaloriesPerThisDay(this)
-        mSettings
-            .edit()
-            .putInt(getString(R.string.cal_burn_key), burnCal.roundToInt())
-            .apply()
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -102,17 +99,16 @@ class UserActivity : MvpAppCompatActivity(), UserView {
     override fun onStart() {
         super.onStart()
         userPresenter.checkNextDay()
-        reLoad()
     }
 
     override fun onResume() {
         super.onResume()
-        setBurnCaloriesInSettings()
+        reLoad()
     }
 
     override fun onStop() {
         super.onStop()
-        eatenFoods.setEatenFoods()
+        userPresenter.setProductEat(eatenFoods)
     }
 
 
@@ -125,8 +121,8 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         progress_bar.max = calories
     }
 
-    override fun progressInProgressBar(caloriesEat: Int) {
-        progress_bar.progress = caloriesEat
+    override fun progressInProgressBar(calories: Int) {
+        progress_bar.progress = calories
     }
 
     override fun showDaysOnDiet(days: Int) {
@@ -143,6 +139,10 @@ class UserActivity : MvpAppCompatActivity(), UserView {
 
     override fun showBurnCal(burnCal: Int) {
         burn_cal.text = burnCal.toString()
+    }
+
+    override fun getProductEat(list: ArrayList<FoodEaten>) {
+        eatenFoods.addAll(list)
     }
 }
 

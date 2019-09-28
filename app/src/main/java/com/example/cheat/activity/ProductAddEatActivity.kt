@@ -78,8 +78,8 @@ class ProductAddEatActivity : AppCompatActivity() {
                 .apply()
 
             var createProduct = true
-            if (UserActivity.eatenFoods.listFoodsEaten.isNotEmpty()) {
-                for (i in UserActivity.eatenFoods.listFoodsEaten) {
+            if (UserActivity.eatenFoods.isNotEmpty()) {
+                for (i in UserActivity.eatenFoods) {
                     if (i.name == product_name.text.toString()) {
                         i.calorieEat += gram_to_cal_text.text.toString().toInt()
                         i.gramsEat += gram_100.progress * 100 + gram_10.progress * 10 + gram_1.progress
@@ -88,7 +88,7 @@ class ProductAddEatActivity : AppCompatActivity() {
                 }
             }
             if (createProduct) {
-                UserActivity.eatenFoods.listFoodsEaten.add(
+                UserActivity.eatenFoods.add(
                     FoodEaten(
                         product_name.text.toString(),
                         gram_to_cal_text.text.toString().toInt(),

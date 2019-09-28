@@ -12,11 +12,32 @@
             android:padding="16dp"
             tools:context=".activity.ProductsStoreActivity">
 
+        <EditText
+                android:id="@+id/search_product"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/search_product_btn"/>
+
+        <ImageButton
+                android:id="@+id/search_product_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_add_btn"
+                android:src="@drawable/ic_eat"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintTop_toTopOf="@id/search_product"
+                app:layout_constraintBottom_toBottomOf="@id/search_product"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/search_product"/>
+
         <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/search_product"
                 app:layout_constraintStart_toStartOf="parent"
                 android:id="@+id/relative_layout">
 

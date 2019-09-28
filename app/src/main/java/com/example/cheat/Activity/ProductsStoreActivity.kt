@@ -11,6 +11,8 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.presenter.InjectPresenter
 import com.example.cheat.*
 import com.example.cheat.adapter.MyAdapterProduct
 import kotlinx.android.synthetic.main.activity_products_store.*
@@ -18,13 +20,16 @@ import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
 @Suppress("DEPRECATION")
-class ProductsStoreActivity : AppCompatActivity() {
+class ProductsStoreActivity : MvpAppCompatActivity(), ProductStoreView {
 
     companion object {
         const val REQUEST_CREATE_PRODUCT = 333
         const val REQUEST_ADD_PRODUCT = 337
         lateinit var products: ListProducts
     }
+
+    @InjectPresenter
+    lateinit var productStorePresenter: ProductStorePresenter
 
     private val TAG = "ProductsStoreActivity"
 
@@ -49,6 +54,11 @@ class ProductsStoreActivity : AppCompatActivity() {
         test_add_product.setOnClickListener {
             val intent = Intent(this, AddNewProductActivity::class.java)
             startActivityForResult(intent, REQUEST_CREATE_PRODUCT)
+        }
+
+        search_product_btn.setOnClickListener {
+            //val text = search_product.text.toString()
+            productStorePresenter.getProducts("banana")
         }
 
 

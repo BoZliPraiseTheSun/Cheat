@@ -3,11 +3,15 @@ package com.example.cheat.activity
 import android.content.SharedPreferences
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.example.cheat.FoodEaten
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 @InjectViewState
-class UserPresenter(settings: SharedPreferences): MvpPresenter<UserView>() {
+class UserPresenter(settings: SharedPreferences) : MvpPresenter<UserView>() {
 
     private val dataFormatDD = SimpleDateFormat("dd", Locale.UK)
     private val preferences = PreferencesModel(settings)
@@ -51,6 +55,21 @@ class UserPresenter(settings: SharedPreferences): MvpPresenter<UserView>() {
             preferences.setCaloriesEat(0)
             preferences.setThisDay(getData())
         }
+    }
+
+    fun getProductEat() {
+        val gsonText = preferences.getFoodEat()
+        val list = arrayListOf<FoodEaten>()
+        if (gsonText != "") {
+            val type = object : TypeToken<ArrayList<FoodEaten>>() {}.type
+            list.addAll(Gson().fromJson(gsonText, type))
+            viewState.getProductEat(list)
+        }
+    }
+
+    fun setProductEat(list: ArrayList<FoodEaten>) {
+        val gsonText = Gson().toJson(list)
+        preferences.setFoodEat(gsonText)
     }
 
     private fun getData(): Int {

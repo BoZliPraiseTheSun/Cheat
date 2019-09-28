@@ -1,18 +1,20 @@
 package com.example.cheat.activity
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.cheat.ListFoodsEaten
 import com.example.cheat.ListProducts
 import com.example.cheat.Product
 
 class PreferencesModel(private val settings: SharedPreferences) {
 
-    private val calPerDayKey = "cal_per_day_key"
-    private val calEatKey = "cal_per_day_key"
-    private val calBurnAllKey = "cal_per_day_key"
-    private val calBurnKey = "cal_per_day_key"
-    private val thisDayKey = "cal_per_day_key"
-    private val daysOnDietKey = "cal_per_day_key"
+    private val calPerDayKey = "calPerDay"
+    private val calEatKey = "calEat"
+    private val calBurnAllKey = "calBurnAll"
+    private val calBurnKey = "calBurn"
+    private val thisDayKey = "thisDay"
+    private val daysOnDietKey = "daysOnDiet"
+    private val listFoodEatKey = "listProduct"
 
     private val edit = settings.edit()
 
@@ -67,5 +69,13 @@ class PreferencesModel(private val settings: SharedPreferences) {
 
     fun setDaysOnDiet(days: Int) {
         edit.putInt(daysOnDietKey, days)
+    }
+
+    fun getFoodEat(): String? {
+        return settings.getString(listFoodEatKey, "")
+    }
+
+    fun setFoodEat(foodEat: String) {
+        edit.putString(listFoodEatKey, foodEat)
     }
 }

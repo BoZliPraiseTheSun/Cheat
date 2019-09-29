@@ -1,10 +1,6 @@
 package com.example.cheat.model
 
 import android.content.SharedPreferences
-import android.util.Log
-import com.example.cheat.ListFoodsEaten
-import com.example.cheat.ListProducts
-import com.example.cheat.Product
 
 class PreferencesModel(private val settings: SharedPreferences) {
 

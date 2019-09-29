@@ -1,6 +1,6 @@
-package com.example.cheat
+package com.example.cheat.api
 
-import com.example.cheat.activity.HintsFood
+import com.example.cheat.model.HintsFood
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

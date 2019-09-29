@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cheat.infoFood
-import com.example.cheat.Foods
+import com.example.cheat.model.infoFood
+import com.example.cheat.model.Foods
 import com.example.cheat.R
 import kotlinx.android.synthetic.main.view_holder_product.view.*
 import kotlin.math.roundToInt

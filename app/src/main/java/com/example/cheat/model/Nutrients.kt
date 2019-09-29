@@ -1,4 +1,4 @@
-package com.example.cheat
+package com.example.cheat.model
 
 import com.google.gson.annotations.SerializedName
 

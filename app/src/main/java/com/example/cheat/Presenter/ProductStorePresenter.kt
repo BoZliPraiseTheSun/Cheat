@@ -3,8 +3,8 @@ package com.example.cheat.Presenter
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.example.cheat.*
-import com.example.cheat.activity.HintsFood
+import com.example.cheat.api.Api
+import com.example.cheat.model.HintsFood
 import com.example.cheat.view.ProductStoreView
 import retrofit2.Call
 import retrofit2.Callback

@@ -12,6 +12,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.example.cheat.*
 import com.example.cheat.Presenter.ProductStorePresenter
 import com.example.cheat.adapter.MyAdapterProduct
+import com.example.cheat.model.Foods
 import com.example.cheat.view.ProductStoreView
 import kotlinx.android.synthetic.main.activity_products_store.*
 import kotlin.collections.ArrayList
@@ -20,16 +21,10 @@ import kotlin.math.roundToInt
 @Suppress("DEPRECATION")
 class ProductsStoreActivity : MvpAppCompatActivity(), ProductStoreView {
 
-    companion object {
-        lateinit var products: ListProducts
-    }
-
     @InjectPresenter
     lateinit var productStorePresenter: ProductStorePresenter
 
     private val TAG = "ProductsStoreActivity"
-
-    var calIn100Gram = -1
 
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager

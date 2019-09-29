@@ -15,6 +15,7 @@ import com.example.cheat.*
 import com.example.cheat.Presenter.UserPresenter
 import com.example.cheat.adapter.MyAdapterFoodsEaten
 import com.example.cheat.google.AccountGoogle
+import com.example.cheat.model.FoodEaten
 import com.example.cheat.view.UserView
 import kotlinx.android.synthetic.main.activity_user.*
 

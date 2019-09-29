@@ -1,6 +1,5 @@
-package com.example.cheat.activity
+package com.example.cheat.model
 
-import com.example.cheat.Foods
 import com.google.gson.annotations.SerializedName
 
 data class HintsFood (

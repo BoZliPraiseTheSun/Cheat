@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SeekBar
-import com.example.cheat.FoodEaten
+import com.example.cheat.model.FoodEaten
 import com.example.cheat.R
 import kotlinx.android.synthetic.main.activity_product_add_eat.*
 import kotlin.math.roundToInt

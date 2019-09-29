@@ -1,7 +1,7 @@
 package com.example.cheat.view
 
 import com.arellomobile.mvp.MvpView
-import com.example.cheat.FoodEaten
+import com.example.cheat.model.FoodEaten
 
 interface UserView: MvpView {
 

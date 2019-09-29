@@ -51,7 +51,6 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         setContentView(R.layout.activity_user)
 
         mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        userPresenter.getProductEat()
         layoutManager = LinearLayoutManager(this)
 
 
@@ -88,6 +87,8 @@ class UserActivity : MvpAppCompatActivity(), UserView {
 
         userPresenter.showDaysOnDiet()
 
+        userPresenter.getProductEat()
+
         mAdapter.notifyDataSetChanged()
     }
 
@@ -114,7 +115,6 @@ class UserActivity : MvpAppCompatActivity(), UserView {
 
     override fun onStop() {
         super.onStop()
-        userPresenter.setProductEat(eatenFoods)
     }
 
 
@@ -148,6 +148,7 @@ class UserActivity : MvpAppCompatActivity(), UserView {
     }
 
     override fun getProductEat(list: ArrayList<FoodEaten>) {
+        eatenFoods.clear()
         eatenFoods.addAll(list)
     }
 }

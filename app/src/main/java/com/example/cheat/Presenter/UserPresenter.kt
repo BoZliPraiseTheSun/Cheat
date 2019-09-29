@@ -1,6 +1,7 @@
 package com.example.cheat.Presenter
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.cheat.model.FoodEaten
@@ -56,6 +57,7 @@ class UserPresenter(settings: SharedPreferences) : MvpPresenter<UserView>() {
             preferences.setDaysOnDiet(preferences.getDaysOnDiet() + 1)
             preferences.setCaloriesEat(0)
             preferences.setThisDay(getData())
+            preferences.setFoodEat("")
         }
     }
 

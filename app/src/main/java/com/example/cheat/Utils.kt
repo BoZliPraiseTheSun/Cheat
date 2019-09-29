@@ -4,25 +4,18 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.ScrollView
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.text.SimpleDateFormat
-import java.util.*
 
-private val dataFormatDD = SimpleDateFormat("dd", Locale.UK)
-
-fun getData(): Int {
-    return dataFormatDD.format(Date()).toInt()
-}
-
-fun slowScroll(scroll_view: ScrollView, TAG: String) {
+fun slowScroll(scrollView: ScrollView) {
     val handler = Handler()
     Thread(Runnable {
         try {
             Thread.sleep(1)
         } catch (e: InterruptedException) {
-            Log.d(TAG, "Scroll error")
         }
-        handler.post{ scroll_view.fullScroll(View.FOCUS_UP) }
+        handler.post{ scrollView.fullScroll(View.FOCUS_UP) }
     }).start()
+}
+
+fun log(tag: String, massage: String) {
+    Log.d(tag, massage)
 }

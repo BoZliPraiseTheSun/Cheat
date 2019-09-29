@@ -19,7 +19,7 @@ class PreferencesModel(private val settings: SharedPreferences) {
     }
 
     fun setCaloriesPerDay(calPerDay: Int) {
-        edit.putInt(calPerDayKey, calPerDay)
+        saveInt(calPerDayKey, calPerDay)
     }
 
 
@@ -28,7 +28,7 @@ class PreferencesModel(private val settings: SharedPreferences) {
     }
 
     fun setCaloriesEat(calEat: Int) {
-        edit.putInt(calEatKey, calEat)
+        saveInt(calEatKey, calEat)
     }
 
 
@@ -37,7 +37,7 @@ class PreferencesModel(private val settings: SharedPreferences) {
     }
 
     fun setCaloriesBurnAll(calBurn: Int) {
-        edit.putInt(calBurnAllKey, calBurn)
+        saveInt(calBurnAllKey, calBurn)
     }
 
 
@@ -46,7 +46,7 @@ class PreferencesModel(private val settings: SharedPreferences) {
     }
 
     fun setCaloriesBurn(calBurn: Int) {
-        edit.putInt(calBurnKey, calBurn)
+        saveInt(calBurnKey, calBurn)
     }
 
 
@@ -55,7 +55,7 @@ class PreferencesModel(private val settings: SharedPreferences) {
     }
 
     fun setThisDay(day: Int) {
-        edit.putInt(thisDayKey, day)
+        saveInt(thisDayKey, day)
     }
 
 
@@ -64,7 +64,7 @@ class PreferencesModel(private val settings: SharedPreferences) {
     }
 
     fun setDaysOnDiet(days: Int) {
-        edit.putInt(daysOnDietKey, days)
+        saveInt(daysOnDietKey, days)
     }
 
     fun getFoodEat(): String? {
@@ -72,6 +72,14 @@ class PreferencesModel(private val settings: SharedPreferences) {
     }
 
     fun setFoodEat(foodEat: String) {
-        edit.putString(listFoodEatKey, foodEat)
+        saveString(listFoodEatKey, foodEat)
+    }
+
+    private fun saveInt(key: String, value: Int) {
+        edit.putInt(key, value).apply()
+    }
+
+    private fun saveString(key: String, value: String) {
+        edit.putString(key, value).apply()
     }
 }

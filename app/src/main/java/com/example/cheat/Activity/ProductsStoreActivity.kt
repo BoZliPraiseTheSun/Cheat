@@ -68,7 +68,7 @@ class ProductsStoreActivity : MvpAppCompatActivity(), ProductStoreView {
         mAdapter = MyAdapterProduct(
             list
         ) { food ->
-            val intent = Intent(this, ProductAddEatActivity::class.java)
+            val intent = Intent(this, AddEatActivity::class.java)
             intent.putExtra("name", food.label)
             intent.putExtra("calories", food.nutrients.enerjy.roundToInt())
             startActivity(intent)

@@ -7,16 +7,16 @@ import android.os.Bundle
 import android.widget.SeekBar
 import com.example.cheat.model.FoodEaten
 import com.example.cheat.R
-import kotlinx.android.synthetic.main.activity_product_add_eat.*
+import kotlinx.android.synthetic.main.activity_add_eat.*
 import kotlin.math.roundToInt
 
-class ProductAddEatActivity : AppCompatActivity() {
+class AddEatActivity : AppCompatActivity() {
 
     private lateinit var mSettings: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_product_add_eat)
+        setContentView(R.layout.activity_add_eat)
 
         mSettings =
             getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)

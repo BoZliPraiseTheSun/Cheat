@@ -1,9 +1,11 @@
-package com.example.cheat.activity
+package com.example.cheat.Presenter
 
 import android.content.SharedPreferences
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.cheat.FoodEaten
+import com.example.cheat.view.UserView
+import com.example.cheat.model.PreferencesModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat

@@ -12,11 +12,11 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.cheat.*
+import com.example.cheat.Presenter.UserPresenter
 import com.example.cheat.adapter.MyAdapterFoodsEaten
 import com.example.cheat.google.AccountGoogle
-import com.example.cheat.google.HistoryGoogleFit
+import com.example.cheat.view.UserView
 import kotlinx.android.synthetic.main.activity_user.*
-import kotlin.math.roundToInt
 
 class UserActivity : MvpAppCompatActivity(), UserView {
 
@@ -30,7 +30,12 @@ class UserActivity : MvpAppCompatActivity(), UserView {
 
     @ProvidePresenter
     fun provideUserPresenter(): UserPresenter {
-        return UserPresenter(getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE))
+        return UserPresenter(
+            getSharedPreferences(
+                getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE
+            )
+        )
     }
 
 

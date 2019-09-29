@@ -4,13 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cheat.Product
+import com.example.cheat.infoFood
+import com.example.cheat.Foods
 import com.example.cheat.R
 import kotlinx.android.synthetic.main.view_holder_product.view.*
+import kotlin.math.roundToInt
 
 class MyAdapterProduct(
-    private val list: ArrayList<Product>,
-    val click: (Int) -> Unit
+    private val list: ArrayList<Foods>,
+    val click: (infoFood) -> Unit
 ) : RecyclerView.Adapter<MyAdapterProduct.MyHolderProduct>() {
 
     val TAG = "ActivityAdapter"
@@ -25,13 +27,12 @@ class MyAdapterProduct(
     }
 
     override fun onBindViewHolder(holderProducts: MyHolderProduct, position: Int) {
-        val listProduct = list[position]
+        val food = list[position]
         holderProducts.apply {
-            itemView.name_product_recycler.text = listProduct.name
-            itemView.cal_product_text_recycler.text = listProduct.calorieContent.toString()
-
+            itemView.name_product_recycler.text = food.infoFood.label
+            itemView.cal_product_text_recycler.text = food.infoFood.nutrients.enerjy.roundToInt().toString()
             itemView.setOnClickListener {
-                click(position)
+                click(food.infoFood)
             }
         }
     }

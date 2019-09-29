@@ -1,4 +1,4 @@
-package com.example.cheat.activity
+package com.example.cheat.model
 
 import android.content.SharedPreferences
 import android.util.Log

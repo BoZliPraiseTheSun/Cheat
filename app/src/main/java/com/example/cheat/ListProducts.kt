@@ -1,6 +1,7 @@
 package com.example.cheat
 
 import android.content.SharedPreferences
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -17,6 +18,7 @@ class ListProducts(private val settings: SharedPreferences) {
 
     fun getFoodsEaten() {
         val gsonText = settings.getString(keyPreferences, "")
+        Log.d("retrofit", "$gsonText")
         if (gsonText != "") {
             val type = object : TypeToken<ArrayList<Product>>() {}.type
             listProducts.addAll(Gson().fromJson(gsonText, type))

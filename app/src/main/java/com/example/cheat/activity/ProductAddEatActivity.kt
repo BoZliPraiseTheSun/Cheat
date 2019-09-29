@@ -21,10 +21,9 @@ class ProductAddEatActivity : AppCompatActivity() {
         mSettings =
             getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
-        val position = intent.getIntExtra("calories", 0)
-        val product = ProductsStoreActivity.products.listProducts[position]
-        product_name.text = product.name
-        val calorieContent = product.calorieContent
+
+        product_name.text = intent.getStringExtra("name")
+        val calorieContent = intent.getIntExtra("calories", 0)
 
         gram_100.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
@@ -67,7 +66,6 @@ class ProductAddEatActivity : AppCompatActivity() {
 
 
         add_product_btn.setOnClickListener {
-            product.rank++
             val calEat = mSettings.getInt(getString(R.string.cal_eat_key), 0)
             mSettings
                 .edit()

@@ -1,4 +1,4 @@
-package com.example.cheat.activity
+package com.example.cheat.view
 
 import com.arellomobile.mvp.MvpView
 import com.example.cheat.FoodEaten

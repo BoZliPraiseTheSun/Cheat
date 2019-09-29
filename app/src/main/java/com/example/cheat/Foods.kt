@@ -1,5 +1,7 @@
 package com.example.cheat
 
+import com.google.gson.annotations.SerializedName
+
 data class Foods (
-    var food: Food
+    @SerializedName("food") var infoFood: infoFood
 )

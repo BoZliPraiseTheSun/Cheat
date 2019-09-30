@@ -171,7 +171,7 @@ class UserActivity : MvpAppCompatActivity(), UserView {
     }
 
     override fun showDaysOnDiet(days: Int) {
-        view_days_diet.text = days.toString()
+        view_days_diet.text = getString(R.string.days_on_diet, days)
     }
 
     override fun showCaloriesEat(calories: Int) {
@@ -183,7 +183,7 @@ class UserActivity : MvpAppCompatActivity(), UserView {
     }
 
     override fun showBurnCal(burnCal: Int) {
-        burn_cal.text = burnCal.toString()
+        burn_cal.text = getString(R.string.calories_burn, burnCal)
     }
 
     override fun getProductEat(list: ArrayList<FoodEaten>) {

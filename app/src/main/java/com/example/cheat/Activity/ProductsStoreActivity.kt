@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.example.cheat.*
-import com.example.cheat.Presenter.ProductStorePresenter
+import com.example.cheat.presenter.ProductStorePresenter
 import com.example.cheat.adapter.MyAdapterProduct
-import com.example.cheat.model.Foods
+import com.example.cheat.retrofitModel.Foods
 import com.example.cheat.view.ProductStoreView
 import kotlinx.android.synthetic.main.activity_products_store.*
 import kotlin.collections.ArrayList

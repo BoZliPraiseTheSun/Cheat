@@ -2,15 +2,22 @@ package com.example.cheat.activity
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.SeekBar
+import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.example.cheat.presenter.AddEatPresenter
 import com.example.cheat.model.FoodEaten
 import com.example.cheat.R
+import com.example.cheat.view.AddEatView
 import kotlinx.android.synthetic.main.activity_add_eat.*
 import kotlin.math.roundToInt
 
-class AddEatActivity : AppCompatActivity() {
+class AddEatActivity : MvpAppCompatActivity(), AddEatView {
+
+
+    @InjectPresenter
+    lateinit var addEatPresenter: AddEatPresenter
 
     private lateinit var mSettings: SharedPreferences
 

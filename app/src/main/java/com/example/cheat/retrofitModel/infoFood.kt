@@ -1,4 +1,4 @@
-package com.example.cheat.model
+package com.example.cheat.retrofitModel
 
 data class infoFood (
     var foodId: String,

@@ -12,11 +12,14 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.example.cheat.*
-import com.example.cheat.Presenter.UserPresenter
+import com.example.cheat.presenter.UserPresenter
 import com.example.cheat.adapter.MyAdapterFoodsEaten
-import com.example.cheat.google.AccountGoogle
 import com.example.cheat.model.FoodEaten
 import com.example.cheat.view.UserView
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.fitness.Fitness
+import com.google.android.gms.fitness.FitnessOptions
+import com.google.android.gms.fitness.data.DataType
 import kotlinx.android.synthetic.main.activity_user.*
 
 class UserActivity : MvpAppCompatActivity(), UserView {
@@ -43,6 +46,7 @@ class UserActivity : MvpAppCompatActivity(), UserView {
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var mAdapter: MyAdapterFoodsEaten
+    private lateinit var fitnessOptions: FitnessOptions
 
     private val TAG = "UserActivity"
 
@@ -53,8 +57,17 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         mSettings = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
         layoutManager = LinearLayoutManager(this)
 
+        fitnessOptions = FitnessOptions
+            .builder()
+            .addDataType(DataType.TYPE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_CALORIES_EXPENDED, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.TYPE_BASAL_METABOLIC_RATE, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_BASAL_METABOLIC_RATE_SUMMARY, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.TYPE_ACTIVITY_SEGMENT, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_ACTIVITY_SUMMARY, FitnessOptions.ACCESS_READ)
+            .build()
 
-        AccountGoogle().singInGoogleAccount(this, this)
+        singInGoogleAccount()
 
         if (mSettings.getInt(getString(R.string.cal_per_day_key), -1) == -1) {
             mSettings.edit().putInt(getString(R.string.cal_per_day_key), 1250).apply()
@@ -93,6 +106,32 @@ class UserActivity : MvpAppCompatActivity(), UserView {
     }
 
 
+    private fun singInGoogleAccount() {
+        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(this), fitnessOptions)) {
+            GoogleSignIn.requestPermissions(
+                this,
+                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
+                GoogleSignIn.getLastSignedInAccount(this),
+                fitnessOptions
+            )
+        } else {
+            getBurnCaloriesPerThisDay()
+        }
+    }
+
+    private fun getBurnCaloriesPerThisDay() {
+        Fitness.getHistoryClient(this, GoogleSignIn.getLastSignedInAccount(this)!!)
+            .readData(userPresenter.getDataReadRequestBuilder())
+            .addOnFailureListener {
+            }
+            .addOnCompleteListener {
+                val calories = userPresenter.handleBucket(it.result!!.buckets)
+                userPresenter.setBurnCal(calories)
+                userPresenter.showBurnCal()
+
+            }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -105,11 +144,11 @@ class UserActivity : MvpAppCompatActivity(), UserView {
 
     override fun onStart() {
         super.onStart()
-        userPresenter.checkNextDay()
     }
 
     override fun onResume() {
         super.onResume()
+        userPresenter.checkNextDay()
         reLoad()
     }
 

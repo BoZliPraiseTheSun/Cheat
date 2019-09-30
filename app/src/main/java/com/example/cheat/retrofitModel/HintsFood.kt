@@ -1,4 +1,4 @@
-package com.example.cheat.model
+package com.example.cheat.retrofitModel
 
 import com.google.gson.annotations.SerializedName
 

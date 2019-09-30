@@ -1,10 +1,10 @@
-package com.example.cheat.Presenter
+package com.example.cheat.presenter
 
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.example.cheat.api.Api
-import com.example.cheat.model.HintsFood
+import com.example.cheat.retrofitModel.HintsFood
 import com.example.cheat.view.ProductStoreView
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,7 +37,6 @@ class ProductStorePresenter : MvpPresenter<ProductStoreView>() {
                     call: Call<HintsFood>,
                     response: Response<HintsFood>
                 ) {
-                    Log.d("retrofit", "${response.body()!!.listFoods}")
                     val list = response.body()!!.listFoods
                     viewState.addAdapter(list)
                     viewState.addAdapterInRecycler()

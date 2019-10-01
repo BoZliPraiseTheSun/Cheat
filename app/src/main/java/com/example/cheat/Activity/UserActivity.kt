@@ -80,7 +80,6 @@ class UserActivity : MvpAppCompatActivity(), UserView {
 
         list_eat_recycler.layoutManager = layoutManager
         list_eat_recycler.adapter = mAdapter
-        singInGoogleAccount()
     }
 
 
@@ -90,7 +89,6 @@ class UserActivity : MvpAppCompatActivity(), UserView {
 
         userPresenter.showDaysOnDiet()
 
-        log("user", "reload")
         userPresenter.getProductEat()
 
         mAdapter.notifyDataSetChanged()
@@ -129,9 +127,15 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 GOOGLE_FIT_PERMISSIONS_REQUEST_CODE -> {
+                    getBurnCaloriesPerThisDay()
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        singInGoogleAccount()
     }
 
     override fun onResume() {

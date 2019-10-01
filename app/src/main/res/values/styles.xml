@@ -57,4 +57,11 @@
         <item name="android:src">@drawable/ic_eat</item>
     </style>
 
+    <style name="SeekBar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:max">9</item>
+        <item name="android:progress">0</item>
+    </style>
+
 </resources>

@@ -16,31 +16,20 @@
 
     <SeekBar
             android:id="@+id/gram_100"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
+            style="@style/SeekBar"
             android:layout_marginTop="180dp"
-            android:max="5"
-            android:progress="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/product_name" />
 
     <SeekBar
             android:id="@+id/gram_10"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_marginTop="22dp"
-            android:max="9"
-            android:progress="0"
+            style="@style/SeekBar"
             app:layout_constraintStart_toStartOf="@id/gram_100"
             app:layout_constraintTop_toBottomOf="@id/gram_100" />
 
     <SeekBar
             android:id="@+id/gram_1"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_marginTop="22dp"
-            android:max="9"
-            android:progress="0"
+            style="@style/SeekBar"
             app:layout_constraintStart_toStartOf="@id/gram_100"
             app:layout_constraintTop_toBottomOf="@id/gram_10" />
 
@@ -54,16 +43,6 @@
             android:text="0"
             app:layout_constraintBottom_toTopOf="@id/gram_100"
             app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-            android:id="@+id/deleted_product"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="12dp"
-            android:text="Del"
-            app:layout_constraintBottom_toBottomOf="@id/add_product_btn"
-            app:layout_constraintEnd_toStartOf="@id/add_product_btn"
-            app:layout_constraintTop_toTopOf="@id/add_product_btn" />
 
     <ImageButton
             android:id="@+id/add_product_btn"

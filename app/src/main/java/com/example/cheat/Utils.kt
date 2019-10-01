@@ -5,14 +5,17 @@ import android.util.Log
 import android.view.View
 import android.widget.ScrollView
 
-fun slowScroll(scroll_view: ScrollView, TAG: String) {
+fun slowScroll(scrollView: ScrollView) {
     val handler = Handler()
     Thread(Runnable {
         try {
             Thread.sleep(1)
         } catch (e: InterruptedException) {
-            Log.d(TAG, "Scroll error")
         }
-        handler.post { scroll_view.fullScroll(View.FOCUS_UP) }
+        handler.post{ scrollView.fullScroll(View.FOCUS_UP) }
     }).start()
+}
+
+fun log(tag: String, massage: String) {
+    Log.d(tag, massage)
 }

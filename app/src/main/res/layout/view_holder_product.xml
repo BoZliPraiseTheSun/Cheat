@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_gravity="start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <TextView
+            style="@style/TextBig"
+            android:gravity="start"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/name_product_recycler"/>
+
+    <TextView
+            style="@style/TextLittle"
+            android:layout_marginStart="10dp"
+            app:layout_constraintBaseline_toBaselineOf="@id/name_product_recycler"
+            app:layout_constraintStart_toEndOf="@id/name_product_recycler"
+            android:id="@+id/cal_product_text_recycler"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Cheat</string>
+    <string name="cal_per_day_key">calPerDay</string>
+    <string name="cal_eat_key">calEat</string>
+    <string name="cal_burn_all_key">calBurnAll</string>
+    <string name="cal_burn_key">calBurn</string>
+    <string name="list_product_key">listEatProduct</string>
+    <string name="list_product_eat_key">listProduct</string>
+    <string name="this_day_key">thisDay</string>
+    <string name="days_on_diet_key">daysOnDiet</string>
+    <string name="preference_file_key">mSettings</string>
+    <string name="days_on_diet">Дней на диете: %1$d</string>
+    <string name="calories_burn">Калорий потрачено: %1$d</string>
 </resources>

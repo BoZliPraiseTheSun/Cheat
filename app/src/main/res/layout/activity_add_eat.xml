@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        tools:context=".activity.AddEatActivity">
+
+    <TextView
+            android:id="@+id/product_name"
+            style="@style/PrimaryText"
+            android:textSize="26dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <SeekBar
+            android:id="@+id/gram_100"
+            style="@style/SeekBar"
+            android:layout_marginTop="180dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/product_name" />
+
+    <SeekBar
+            android:id="@+id/gram_10"
+            style="@style/SeekBar"
+            app:layout_constraintStart_toStartOf="@id/gram_100"
+            app:layout_constraintTop_toBottomOf="@id/gram_100" />
+
+    <SeekBar
+            android:id="@+id/gram_1"
+            style="@style/SeekBar"
+            app:layout_constraintStart_toStartOf="@id/gram_100"
+            app:layout_constraintTop_toBottomOf="@id/gram_10" />
+
+    <TextView
+            android:id="@+id/gram_view"
+            style="@style/TextListener"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginEnd="26dp"
+            android:layout_marginBottom="10dp"
+            android:text="0"
+            app:layout_constraintBottom_toTopOf="@id/gram_100"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+            android:id="@+id/add_product_btn"
+            style="@style/Button"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="@id/gram_1"
+            app:layout_constraintTop_toBottomOf="@id/gram_1" />
+
+    <TextView
+            android:id="@+id/text_view"
+            style="@style/TextListener"
+            android:layout_marginTop="6dp"
+            android:text="Ккал: "
+            app:layout_constraintStart_toStartOf="@id/gram_1"
+            app:layout_constraintTop_toBottomOf="@id/gram_1" />
+
+    <TextView
+            android:id="@+id/calories_view"
+            style="@style/TextListener"
+            app:layout_constraintBaseline_toBaselineOf="@id/text_view"
+            app:layout_constraintStart_toEndOf="@id/text_view" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

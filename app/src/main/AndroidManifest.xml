@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.example.cheat">
+        xmlns:tools="http://schemas.android.com/tools"
+        package="com.example.cheat">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
             android:name="android.hardware.camera2"
-            android:required="true"/>
+            android:required="true" />
 
     <application
             android:allowBackup="true"
@@ -18,28 +18,15 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".AddNewProduct">
-        </activity>
-        <activity android:name=".ListProductsActivity">
-        </activity>
-        <activity android:name=".UserActivity">
+        <activity android:name=".activity.AddEatActivity"></activity>
+        <activity android:name=".activity.ProductsStoreActivity"></activity>
+        <activity android:name=".activity.UserActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
-
-        <provider
-                android:name="androidx.core.content.FileProvider"
-                android:authorities="com.example.cheat.provider"
-                android:exported="false"
-                android:grantUriPermissions="true">
-            <meta-data
-                    android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/file_paths"/>
-        </provider>
     </application>
 
 </manifest>

@@ -26,7 +26,7 @@ class MyAdapterFoodsEaten(private val list: ArrayList<FoodEaten>, val click: (Fo
         val foodEat = list[position]
         holderProductsEat.apply {
             itemView.name_eat_view.text = foodEat.name
-            itemView.cal_eat_view.text = foodEat.calorieEat.toString()
+            itemView.cal_eat_view.text = foodEat.caloriesEat.toString()
             itemView.gram_eat_view.text = foodEat.gramsEat.toString()
             itemView.setOnClickListener {
                 click(foodEat)

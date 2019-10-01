@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -26,7 +28,6 @@ class ProductsStoreActivity : MvpAppCompatActivity(), ProductStoreView {
 
     private val TAG = "ProductsStoreActivity"
 
-    private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var mAdapter: MyAdapterProduct
 
@@ -35,15 +36,14 @@ class ProductsStoreActivity : MvpAppCompatActivity(), ProductStoreView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products_store)
 
-        mSettings =
-            getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-
 
         search_product_btn.setOnClickListener {
-            val text = search_product.text.toString()
-            productStorePresenter.getProducts(text)
+            if (search_product.text.isNotEmpty()) {
+                val text = search_product.text.toString()
+                productStorePresenter.getProducts(text)
+            }
+            search_product.onEditorAction(EditorInfo.IME_ACTION_DONE)
         }
-
 
         layoutManager = LinearLayoutManager(this)
         product_list_recycler.layoutManager = layoutManager
@@ -57,10 +57,6 @@ class ProductsStoreActivity : MvpAppCompatActivity(), ProductStoreView {
             when (requestCode) {
             }
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
     }
 
 

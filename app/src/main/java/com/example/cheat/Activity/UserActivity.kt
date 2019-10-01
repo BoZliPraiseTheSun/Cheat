@@ -24,10 +24,6 @@ import kotlinx.android.synthetic.main.activity_user.*
 
 class UserActivity : MvpAppCompatActivity(), UserView {
 
-    companion object {
-        val eatenFoods = arrayListOf<FoodEaten>()
-    }
-
 
     @InjectPresenter
     lateinit var userPresenter: UserPresenter
@@ -42,11 +38,12 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         )
     }
 
-
     private lateinit var mSettings: SharedPreferences
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var mAdapter: MyAdapterFoodsEaten
     private lateinit var fitnessOptions: FitnessOptions
+
+    private val eatenFoods = arrayListOf<FoodEaten>()
 
     private val TAG = "UserActivity"
 
@@ -67,7 +64,6 @@ class UserActivity : MvpAppCompatActivity(), UserView {
             .addDataType(DataType.AGGREGATE_ACTIVITY_SUMMARY, FitnessOptions.ACCESS_READ)
             .build()
 
-        singInGoogleAccount()
 
         if (mSettings.getInt(getString(R.string.cal_per_day_key), -1) == -1) {
             mSettings.edit().putInt(getString(R.string.cal_per_day_key), 1250).apply()
@@ -89,20 +85,16 @@ class UserActivity : MvpAppCompatActivity(), UserView {
 
 
     private fun reLoad() {
-        userPresenter.installCalPerDayInProgressBar()
-        userPresenter.installCaloriesEatInSecondaryProgressBar()
-        userPresenter.progressInProgressBar()
-
         userPresenter.showBurnCal()
-
-        userPresenter.showCaloriesEat()
-        userPresenter.showCaloriesLeft()
 
         userPresenter.showDaysOnDiet()
 
+        log("user", "reload")
         userPresenter.getProductEat()
 
         mAdapter.notifyDataSetChanged()
+
+        singInGoogleAccount()
     }
 
 
@@ -132,6 +124,7 @@ class UserActivity : MvpAppCompatActivity(), UserView {
             }
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -142,44 +135,15 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onResume() {
         super.onResume()
         userPresenter.checkNextDay()
         reLoad()
     }
 
-    override fun onStop() {
-        super.onStop()
-    }
-
-
-
-    override fun installCaloriesEatInSecondaryProgressBar(calories: Int) {
-        progress_bar.secondaryProgress = calories
-    }
-
-    override fun installCalPerDayInProgressBar(calories: Int) {
-        progress_bar.max = calories
-    }
-
-    override fun progressInProgressBar(calories: Int) {
-        progress_bar.progress = calories
-    }
 
     override fun showDaysOnDiet(days: Int) {
         view_days_diet.text = getString(R.string.days_on_diet, days)
-    }
-
-    override fun showCaloriesEat(calories: Int) {
-        cal_eat_num_text.text = calories.toString()
-    }
-
-    override fun showCaloriesLeft(calories: Int) {
-        cal_left_num_text.text = calories.toString()
     }
 
     override fun showBurnCal(burnCal: Int) {
@@ -187,8 +151,11 @@ class UserActivity : MvpAppCompatActivity(), UserView {
     }
 
     override fun getProductEat(list: ArrayList<FoodEaten>) {
-        eatenFoods.clear()
         eatenFoods.addAll(list)
+    }
+
+    override fun clearArrayList() {
+        eatenFoods.clear()
     }
 }
 

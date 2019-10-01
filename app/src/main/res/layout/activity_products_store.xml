@@ -17,16 +17,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:hint="Введите название продукта"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/search_product_btn"/>
 
         <ImageButton
                 android:id="@+id/search_product_btn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_add_btn"
-                android:src="@drawable/ic_eat"
+                style="@style/Button"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintTop_toTopOf="@id/search_product"
                 app:layout_constraintBottom_toBottomOf="@id/search_product"
@@ -47,14 +45,6 @@
                     android:id="@+id/product_list_recycler"/>
 
         </RelativeLayout>
-
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ADD"
-                app:layout_constraintTop_toBottomOf="@id/relative_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/test_add_product"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

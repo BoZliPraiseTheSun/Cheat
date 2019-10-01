@@ -3,6 +3,7 @@ package com.example.cheat.presenter
 import android.content.SharedPreferences
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.example.cheat.log
 import com.example.cheat.model.FoodEaten
 import com.example.cheat.view.UserView
 import com.example.cheat.model.PreferencesModel
@@ -25,36 +26,13 @@ class UserPresenter(settings: SharedPreferences) : MvpPresenter<UserView>() {
     private val preferences = PreferencesModel(settings)
 
     fun showBurnCal() {
-        viewState.showBurnCal(preferences.getCaloriesBurnAll() + preferences.getCaloriesBurn())
+        viewState.showBurnCal(preferences.getCaloriesBurn())
     }
 
     fun setBurnCal(calories: Float) {
         preferences.setCaloriesBurn(calories.roundToInt())
     }
 
-    fun installCalPerDayInProgressBar() {
-        viewState.installCalPerDayInProgressBar(preferences.getCaloriesPerDay() * 2)
-    }
-
-    fun installCaloriesEatInSecondaryProgressBar() {
-        viewState.installCaloriesEatInSecondaryProgressBar(preferences.getCaloriesEat())
-    }
-
-    fun showCaloriesEat() {
-        viewState.showCaloriesEat(preferences.getCaloriesEat())
-    }
-
-    fun showCaloriesLeft() {
-        var caloriesLeft = preferences.getCaloriesPerDay() - preferences.getCaloriesEat()
-        if (caloriesLeft < 0) {
-            caloriesLeft = 0
-        }
-        viewState.showCaloriesLeft(caloriesLeft)
-    }
-
-    fun progressInProgressBar() {
-        viewState.progressInProgressBar(preferences.getCaloriesEat())
-    }
 
     fun showDaysOnDiet() {
         viewState.showDaysOnDiet(preferences.getDaysOnDiet())
@@ -68,6 +46,7 @@ class UserPresenter(settings: SharedPreferences) : MvpPresenter<UserView>() {
             preferences.setCaloriesEat(0)
             preferences.setThisDay(getData())
             preferences.setFoodEat("")
+            viewState.clearArrayList()
         }
     }
 
@@ -77,15 +56,10 @@ class UserPresenter(settings: SharedPreferences) : MvpPresenter<UserView>() {
         if (gsonText != "") {
             val type = object : TypeToken<ArrayList<FoodEaten>>() {}.type
             list.addAll(Gson().fromJson(gsonText, type))
+            viewState.clearArrayList()
             viewState.getProductEat(list)
         }
     }
-
-    fun setProductEat(list: ArrayList<FoodEaten>) {
-        val gsonText = Gson().toJson(list)
-        preferences.setFoodEat(gsonText)
-    }
-
 
 
     fun getDataReadRequestBuilder(): DataReadRequest {

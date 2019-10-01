@@ -19,7 +19,6 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activity.AddEatActivity"></activity>
-        <activity android:name=".activity.AddNewProductActivity"></activity>
         <activity android:name=".activity.ProductsStoreActivity"></activity>
         <activity android:name=".activity.UserActivity">
             <intent-filter>

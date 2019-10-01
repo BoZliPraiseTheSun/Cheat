@@ -2,6 +2,6 @@ package com.example.cheat.model
 
 data class FoodEaten(
     val name: String,
-    var calorieEat: Int,
+    var caloriesEat: Int,
     var gramsEat: Int
 )

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        tools:context=".fragment.ProgressBarFragment">
+
+    <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:progressDrawable="@drawable/custom_progress_bar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+            android:id="@+id/cal_left_num_text"
+            style="@style/TextBig"
+            app:layout_constraintBottom_toTopOf="@id/cal_left_text"
+            app:layout_constraintEnd_toEndOf="@id/cal_left_text"
+            app:layout_constraintStart_toStartOf="@id/cal_left_text" />
+
+    <TextView
+            android:id="@+id/cal_left_text"
+            style="@style/TextLittle"
+            android:text="Ккал осталось"
+            app:layout_constraintBottom_toTopOf="@id/cal_eat_text"
+            app:layout_constraintEnd_toEndOf="@id/progress_bar"
+            app:layout_constraintStart_toStartOf="@id/progress_bar"
+            app:layout_constraintTop_toTopOf="@id/progress_bar" />
+
+    <TextView
+            android:id="@+id/cal_eat_text"
+            style="@style/TextLittle"
+            android:text="Ккал съедено"
+            app:layout_constraintBottom_toBottomOf="@id/progress_bar"
+            app:layout_constraintEnd_toEndOf="@id/progress_bar"
+            app:layout_constraintStart_toStartOf="@id/progress_bar"
+            app:layout_constraintTop_toBottomOf="@id/cal_left_text" />
+
+    <TextView
+            android:id="@+id/cal_eat_num_text"
+            style="@style/TextBig"
+            app:layout_constraintEnd_toEndOf="@id/cal_eat_text"
+            app:layout_constraintStart_toStartOf="@id/cal_eat_text"
+            app:layout_constraintTop_toBottomOf="@id/cal_eat_text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

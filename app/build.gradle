@@ -52,6 +52,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     //Moxy
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
     kapt 'tech.schoolhelper:moxy-x-compiler:1.7.0'
     implementation 'tech.schoolhelper:moxy-x:1.7.0'
     implementation 'tech.schoolhelper:moxy-x-androidx:1.7.0'

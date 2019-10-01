@@ -7,7 +7,7 @@
         android:layout_height="wrap_content">
 
     <TextView
-            style="@style/TextAverage"
+            style="@style/TextBig"
             android:gravity="start"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"

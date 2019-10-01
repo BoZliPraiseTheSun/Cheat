@@ -80,6 +80,7 @@ class UserActivity : MvpAppCompatActivity(), UserView {
 
         list_eat_recycler.layoutManager = layoutManager
         list_eat_recycler.adapter = mAdapter
+        singInGoogleAccount()
     }
 
 
@@ -93,8 +94,6 @@ class UserActivity : MvpAppCompatActivity(), UserView {
         userPresenter.getProductEat()
 
         mAdapter.notifyDataSetChanged()
-
-        singInGoogleAccount()
     }
 
 

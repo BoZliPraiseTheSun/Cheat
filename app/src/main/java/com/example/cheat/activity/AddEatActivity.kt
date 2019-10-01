@@ -1,5 +1,6 @@
 package com.example.cheat.activity
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.widget.SeekBar
@@ -108,6 +109,7 @@ class AddEatActivity : MvpAppCompatActivity(), AddEatView {
     }
 
     override fun closeActivity() {
+        setResult(Activity.RESULT_OK)
         finish()
     }
 }

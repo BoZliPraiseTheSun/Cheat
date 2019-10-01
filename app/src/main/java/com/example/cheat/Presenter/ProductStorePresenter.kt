@@ -38,7 +38,8 @@ class ProductStorePresenter : MvpPresenter<ProductStoreView>() {
                     response: Response<HintsFood>
                 ) {
                     val list = response.body()!!.listFoods
-                    viewState.addAdapter(list)
+                    viewState.refreshListFoods(list)
+                    viewState.addAdapter()
                     viewState.addAdapterInRecycler()
                 }
 

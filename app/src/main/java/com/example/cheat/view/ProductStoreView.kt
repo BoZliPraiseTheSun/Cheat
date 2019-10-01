@@ -5,8 +5,10 @@ import com.example.cheat.retrofitModel.Foods
 
 interface ProductStoreView: MvpView {
 
-    fun addAdapter(list: ArrayList<Foods>)
+    fun addAdapter()
 
     fun addAdapterInRecycler()
+
+    fun refreshListFoods(list: ArrayList<Foods>)
 
 }

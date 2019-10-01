@@ -23,6 +23,11 @@ import kotlin.math.roundToInt
 @Suppress("DEPRECATION")
 class ProductsStoreActivity : MvpAppCompatActivity(), ProductStoreView {
 
+    companion object {
+        const val FOOD_ADDED = 377
+    }
+
+
     @InjectPresenter
     lateinit var productStorePresenter: ProductStorePresenter
 
@@ -30,6 +35,8 @@ class ProductsStoreActivity : MvpAppCompatActivity(), ProductStoreView {
 
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var mAdapter: MyAdapterProduct
+
+    private val listFoods: ArrayList<Foods> = arrayListOf()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,20 +62,30 @@ class ProductsStoreActivity : MvpAppCompatActivity(), ProductStoreView {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
+                FOOD_ADDED -> {
+                    search_product.text.clear()
+                    listFoods.clear()
+                    mAdapter.notifyDataSetChanged()
+                }
             }
         }
     }
 
 
-    override fun addAdapter(list: ArrayList<Foods>) {
+    override fun addAdapter() {
         mAdapter = MyAdapterProduct(
-            list
+            listFoods
         ) { food ->
             val intent = Intent(this, AddEatActivity::class.java)
             intent.putExtra("name", food.label)
             intent.putExtra("calories", food.nutrients.enerjy.roundToInt())
-            startActivity(intent)
+            startActivityForResult(intent, FOOD_ADDED)
         }
+    }
+
+    override fun refreshListFoods(list: ArrayList<Foods>) {
+        listFoods.addAll(list)
+
     }
 
     override fun addAdapterInRecycler() {

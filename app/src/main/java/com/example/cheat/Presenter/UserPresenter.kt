@@ -67,6 +67,7 @@ class UserPresenter(settings: SharedPreferences) : MvpPresenter<UserView>() {
             .aggregate(DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED)
             .bucketByActivityType(1, TimeUnit.MILLISECONDS)
             .setTimeRange(getTodayZeroTime(), getValidTime(), TimeUnit.MILLISECONDS)
+
             .build()
     }
 
